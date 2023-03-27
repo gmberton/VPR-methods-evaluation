@@ -23,7 +23,11 @@ def parse_arguments():
                         help="_")
     parser.add_argument("--recall_values", type=int, nargs="+", default=[1, 5, 10, 20],
                         help="_")
-
+    parser.add_argument("--num_preds_to_save", type=int, default=3,
+                        help="_")
+    parser.add_argument("--save_only_wrong_preds", action="store_true",
+                        help="_")
+    
     args = parser.parse_args()
     if not os.path.exists(args.dataset_folder):
         raise FileNotFoundError(f"Folder {args.dataset_folder} does not exist")

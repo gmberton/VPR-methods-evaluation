@@ -1,3 +1,7 @@
+
+TODO
+scaricare mixvpr automaticamente
+
 # auto_VPR
 
 # TODO
