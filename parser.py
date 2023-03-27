@@ -9,7 +9,11 @@ def parse_arguments():
     parser.add_argument("--positive_dist_threshold", type=int, default=25,
                         help="distance (in meters) for a prediction to be considered a positive")
     parser.add_argument("--method_name", type=str, default="cosplace",
-                        choices=["cosplace", "netvlad", "sfrs", "convap", "mixvpr"],
+                        choices=["netvlad", "sfrs", "cosplace", "convap", "mixvpr"],
+                        help="_")
+    parser.add_argument("--backbone", type=str, default=None,
+                        help="_")
+    parser.add_argument("--descriptors_dimension", type=int, default=None,
                         help="_")
     parser.add_argument("--dataset_folder", type=str, default="/home/gabriele/vg_datasets/retrieval/st_lucia/images/test", #required=True,
                         help="_")
@@ -31,6 +35,54 @@ def parse_arguments():
     args = parser.parse_args()
     if not os.path.exists(args.dataset_folder):
         raise FileNotFoundError(f"Folder {args.dataset_folder} does not exist")
-
+    
+    if args.method_name == "netvlad":
+        if args.backbone not in [None, "VGG16"]:
+            raise ValueError("When using NetVLAD the backbone must be None or VGG16")
+        if args.descriptors_dimension not in [None, 4096, 32768]:
+            raise ValueError("When using NetVLAD the descriptors_dimension must be one of [None, 4096, 32768]")
+        if args.descriptors_dimension is None:
+            args.descriptors_dimension = 4096
+        
+        if args.method_name == "sfrs":
+            if args.backbone not in [None, "VGG16"]:
+                raise ValueError("When using SFRS the backbone must be None or VGG16")
+            if args.descriptors_dimension not in [None, 4096]:
+                raise ValueError("When using SFRS the descriptors_dimension must be one of [None, 4096]")
+            if args.descriptors_dimension is None:
+                args.descriptors_dimension = 4096
+        
+        if args.method_name == "cosplace":
+            if args.backbone is None:
+                args.backbone = "ResNet50"
+            if args.descriptors_dimension is None:
+                args.descriptors_dimension = 512
+            if args.backbone == "VGG16" and args.descriptors_dimension not in [64, 128, 256, 512]:
+                raise ValueError("When using CosPlace with VGG16 the descriptors_dimension must be in [64, 128, 256, 512]")
+            if args.backbone == "ResNet18" and args.descriptors_dimension not in [32, 64, 128, 256, 512]:
+                raise ValueError("When using CosPlace with ResNet18 the descriptors_dimension must be in [32, 64, 128, 256, 512]")
+            if args.backbone in ["ResNet50", "ResNet101", "ResNet152"] and args.descriptors_dimension not in [32, 64, 128, 256, 512, 1024, 2048]:
+                raise ValueError(f"When using CosPlace with {args.backbone} the descriptors_dimension must be in [32, 64, 128, 256, 512, 1024, 2048]")
+        
+        if args.method_name == "convap":
+            if args.backbone is None:
+                args.backbone = "ResNet50"
+            if args.descriptors_dimension is None:
+                args.descriptors_dimension = 512
+            if args.backbone not in [None, "ResNet50"]:
+                raise ValueError("When using Conv-AP the backbone must be None or ResNet50")
+            if args.descriptors_dimension not in [None, 512, 2048, 4096, 8192]:
+                raise ValueError("When using Conv-AP the descriptors_dimension must be one of [None, 512, 2048, 4096, 8192]")
+        
+        if args.method_name == "mixvpr":
+            if args.backbone is None:
+                args.backbone = "ResNet50"
+            if args.descriptors_dimension is None:
+                args.descriptors_dimension = 512
+            if args.backbone not in [None, "ResNet50"]:
+                raise ValueError("When using Conv-AP the backbone must be None or ResNet50")
+            if args.descriptors_dimension not in [None, 128, 512, 4096]:
+                raise ValueError("When using Conv-AP the descriptors_dimension must be one of [None, 128, 512, 4096]")
+    
     return args
 

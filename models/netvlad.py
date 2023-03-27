@@ -51,9 +51,10 @@ class NetVLAD(torch.nn.Module):
     #     'VGG16-NetVLAD-TokyoTM': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/TokyoTM_struct.mat'
     # }
 
-    def __init__(self):
+    def __init__(self, descriptors_dimension):
         super().__init__()
-        whiten = True
+        assert descriptors_dimension in [4096, 32768]
+        whiten = descriptors_dimension == 4096
         model_name = 'VGG16-NetVLAD-Pitts30K'
         dir_models = {
             'VGG16-NetVLAD-Pitts30K': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/Pitts30K_struct.mat',
@@ -64,7 +65,7 @@ class NetVLAD(torch.nn.Module):
         checkpoint = Path(torch.hub.get_dir(), 'netvlad', model_name + '.mat')
         if not checkpoint.exists():
             checkpoint.parent.mkdir(exist_ok=True, parents=True)
-            link = self.dir_models[model_name]
+            link = dir_models[model_name]
             cmd = ['wget', link, '-O', str(checkpoint)]
             subprocess.run(cmd, check=True)
 

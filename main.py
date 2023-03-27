@@ -21,9 +21,10 @@ output_folder = f"logs/{args.exp_name}/{start_time.strftime('%Y-%m-%d_%H-%M-%S')
 commons.setup_logging(output_folder, stdout="debug")
 logging.info(" ".join(sys.argv))
 logging.info(f"Arguments: {args}")
+logging.info(f"Testing with {args.method_name} with a {args.backbone} backbone and descriptors dimension {args.descriptors_dimension}")
 logging.info(f"The outputs are being saved in {output_folder}")
 
-model, descriptors_dimension = models.get_model(args.method_name)
+model = models.get_model(args.method_name)
 model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.dataset_folder, positive_dist_threshold=args.positive_dist_threshold)
@@ -33,7 +34,7 @@ with torch.inference_mode():
     database_subset_ds = Subset(test_ds, list(range(test_ds.database_num)))
     database_dataloader = DataLoader(dataset=database_subset_ds, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
-    all_descriptors = np.empty((len(test_ds), descriptors_dimension), dtype="float32")
+    all_descriptors = np.empty((len(test_ds), args.descriptors_dimension), dtype="float32")
     for images, indices in tqdm(database_dataloader, ncols=100):
         descriptors = model(images.to(args.device))
         descriptors = descriptors.cpu().numpy()
@@ -53,7 +54,7 @@ queries_descriptors = all_descriptors[test_ds.database_num:]
 database_descriptors = all_descriptors[:test_ds.database_num]
 
 # Use a kNN to find predictions
-faiss_index = faiss.IndexFlatL2(descriptors_dimension)
+faiss_index = faiss.IndexFlatL2(args.descriptors_dimension)
 faiss_index.add(database_descriptors)
 del database_descriptors, all_descriptors
 

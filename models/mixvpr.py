@@ -1,9 +1,24 @@
 
+import os
+import gdown
 import torch
 import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as transforms
+
+
+MODELS_INFO = {
+    128: ("https://drive.google.com/file/d/1DQnefjk1hVICOEYPwE4-CZAZOvi1NSJz/view",
+          "resnet50_MixVPR_128_channels(64)_rows(2)",
+          64, 2),
+    512: ("https://drive.google.com/file/d/1khiTUNzZhfV2UUupZoIsPIbsMRBYVDqj/view",
+          "resnet50_MixVPR_512_channels(256)_rows(2)",
+          256, 2),
+    2048: ("https://drive.google.com/file/d/1vuz3PvnR7vxnDDLQrdHJaOA04SQrtk5L/view",
+          "resnet50_MixVPR_4096_channels(1024)_rows(4)",
+          1024, 4),
+}
 
 
 class FeatureMixerLayer(nn.Module):
@@ -70,7 +85,6 @@ class MixVPR(nn.Module):
 class ResNet(nn.Module):
     def __init__(self):
         super().__init__()
-        layers_to_crop = [4]
         self.model = torchvision.models.resnet50()
         # remove the avgpool and most importantly the fc layer
         self.model.avgpool = nn.Identity()
@@ -104,15 +118,19 @@ class MixVPRModel(torch.nn.Module):
         return x
 
 
-def get_mixvpr():
-    model = MixVPRModel(
-                     agg_config={'in_channels' : 1024, 'in_h' : 20, 'in_w' : 20, 'out_channels' : 256,
-                                 'mix_depth' : 4, 'mlp_ratio' : 1, 'out_rows' : 2})
-    #                 agg_config={'in_channels' : 1024, 'in_h' : 20, 'in_w' : 20, 'out_channels' : 1024,
-    #                             'mix_depth' : 4, 'mlp_ratio' : 1, 'out_rows' : 4})
+def get_mixvpr(descriptors_dimension):
+    url, filename, out_channels, out_rows = MODELS_INFO[descriptors_dimension]
+    model_config = {'in_channels': 1024, 'in_h': 20, 'in_w': 20, 'out_channels': out_channels,
+                    'mix_depth': 4, 'mlp_ratio': 1, 'out_rows': out_rows}
+    model = MixVPRModel(agg_config=model_config)
+    file_path = f"trained_models/mixvpr/{filename}"
+    if not os.path.exists(out_channels):
+        os.makedirs("trained_models/mixvpr", exist_ok=True)
+        gdown.download(url=url, output=file_path, quiet=False, fuzzy=True)
+    
     state_dict = torch.load('./resnet50_MixVPR_512_channels(256)_rows(2).ckpt')
     model.load_state_dict(state_dict)
     model = model.eval().cuda()
-
+    
     return model
 
