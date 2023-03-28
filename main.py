@@ -18,13 +18,13 @@ from test_dataset import TestDataset
 args = parser.parse_arguments()
 start_time = datetime.now()
 output_folder = f"logs/{args.exp_name}/{start_time.strftime('%Y-%m-%d_%H-%M-%S')}"
-commons.setup_logging(output_folder, stdout="debug")
+commons.setup_logging(output_folder, stdout="info")
 logging.info(" ".join(sys.argv))
 logging.info(f"Arguments: {args}")
-logging.info(f"Testing with {args.method_name} with a {args.backbone} backbone and descriptors dimension {args.descriptors_dimension}")
+logging.info(f"Testing with {args.method} with a {args.backbone} backbone and descriptors dimension {args.descriptors_dimension}")
 logging.info(f"The outputs are being saved in {output_folder}")
 
-model = models.get_model(args.method_name)
+model = models.get_model(args.method, args.backbone, args.descriptors_dimension)
 model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.dataset_folder, positive_dist_threshold=args.positive_dist_threshold)

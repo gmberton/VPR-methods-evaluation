@@ -1,3 +1,5 @@
+# Model from "MixVPR: Feature Mixing for Visual Place Recognition" - https://arxiv.org/abs/2303.02190
+# Parts of this code are from https://github.com/amaralibey/MixVPR
 
 import os
 import gdown
@@ -15,7 +17,7 @@ MODELS_INFO = {
     512: ("https://drive.google.com/file/d/1khiTUNzZhfV2UUupZoIsPIbsMRBYVDqj/view",
           "resnet50_MixVPR_512_channels(256)_rows(2)",
           256, 2),
-    2048: ("https://drive.google.com/file/d/1vuz3PvnR7vxnDDLQrdHJaOA04SQrtk5L/view",
+    4096: ("https://drive.google.com/file/d/1vuz3PvnR7vxnDDLQrdHJaOA04SQrtk5L/view",
           "resnet50_MixVPR_4096_channels(1024)_rows(4)",
           1024, 4),
 }
@@ -124,11 +126,10 @@ def get_mixvpr(descriptors_dimension):
                     'mix_depth': 4, 'mlp_ratio': 1, 'out_rows': out_rows}
     model = MixVPRModel(agg_config=model_config)
     file_path = f"trained_models/mixvpr/{filename}"
-    if not os.path.exists(out_channels):
+    if not os.path.exists(file_path):
         os.makedirs("trained_models/mixvpr", exist_ok=True)
-        gdown.download(url=url, output=file_path, quiet=False, fuzzy=True)
-    
-    state_dict = torch.load('./resnet50_MixVPR_512_channels(256)_rows(2).ckpt')
+        gdown.download(url=url, output=file_path, fuzzy=True)
+    state_dict = torch.load(file_path)
     model.load_state_dict(state_dict)
     model = model.eval().cuda()
     

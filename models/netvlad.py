@@ -1,3 +1,5 @@
+# Model from "NetVLAD: CNN architecture for weakly supervised place recognition" - https://arxiv.org/abs/1511.07247
+# Parts of this code are from https://github.com/cvg/Hierarchical-Localization
 
 from pathlib import Path
 import subprocess
@@ -38,18 +40,6 @@ class NetVLADLayer(nn.Module):
 
 
 class NetVLAD(torch.nn.Module):
-    # default_conf = {
-    #     'model_name': 'VGG16-NetVLAD-Pitts30K',
-    #     'whiten': True
-    # }
-    # required_inputs = ['image']
-    #
-    # # Models exported using
-    # # https://github.com/uzh-rpg/netvlad_tf_open/blob/master/matlab/net_class2struct.m.
-    # dir_models = {
-    #     'VGG16-NetVLAD-Pitts30K': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/Pitts30K_struct.mat',
-    #     'VGG16-NetVLAD-TokyoTM': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/TokyoTM_struct.mat'
-    # }
 
     def __init__(self, descriptors_dimension):
         super().__init__()

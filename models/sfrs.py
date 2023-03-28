@@ -1,3 +1,5 @@
+# Model from "Self-supervising Fine-grained Region Similarities for Large-scale Image Localization" - https://arxiv.org/abs/2006.03926
+# Parts of this code are from https://github.com/cvg/Hierarchical-Localization
 
 import torch
 import torchvision.transforms as tfm

@@ -1,9 +1,22 @@
+# Model from "GSV-Cities: Toward Appropriate Supervised Visual Place Recognition" - https://arxiv.org/abs/2210.10239
+# Parts of this code are from https://github.com/amaralibey/gsv-cities
 
+import os
+import gdown
 import torch
 import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as transforms
+
+
+MODELS_INFO = {
+    512: "resnet50_ConvAP_128_2x2.ckpt",
+    2048: "resnet50_ConvAP_512_2x2.ckpt",
+    4096: "resnet50_ConvAP_1024_2x2.ckpt",
+    8192: "resnet50_ConvAP_2048_2x2.ckpt"
+}
+URL = "https://drive.google.com/drive/folders/1VYPw9uGD11NgiGFgfWueLt3noJYOIuhL"
 
 
 class ConvAP(nn.Module):
@@ -105,15 +118,16 @@ class ConvAPModel(torch.nn.Module):
         return x
 
 
-def get_convap():
-    FC_OUTPUT_DIM = 2048
-    model = ConvAPModel(
-        agg_config={'in_channels': 2048,
-                    'out_channels': FC_OUTPUT_DIM // 4,
-                    's1': 2,
-                    's2': 2},
-    )
-    state_dict = torch.load('models/data/resnet50_ConvAP_512_2x2.ckpt')
+def get_convap(descriptors_dimension):
+    filename = MODELS_INFO[descriptors_dimension]
+    file_path = f"trained_models/convap/{filename}"
+    if not os.path.exists(file_path):
+        os.makedirs("trained_models/convap", exist_ok=True)
+        gdown.download_folder(URL, output="trained_models/convap", use_cookies=False)
+
+    model_config = {'in_channels': 2048, 'out_channels': descriptors_dimension // 4, 's1': 2, 's2': 2}
+    model = ConvAPModel(agg_config=model_config)
+    state_dict = torch.load(file_path)
     model.load_state_dict(state_dict)
     model = model.eval().cuda()
 
