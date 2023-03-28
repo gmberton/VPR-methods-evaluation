@@ -73,9 +73,7 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
             list_of_images_paths.append(pred_path)
             is_correct = pred in positives_per_query[query_index]
             preds_correct.append(is_correct)
-        # """
-        # """
-        # Uncomment this if you want to save predictions only for queries with wrong first pred
+        
         if save_only_wrong_preds and preds_correct[1]:
             continue
         
