@@ -60,10 +60,34 @@ def build_prediction_image(images_paths, preds_correct=None):
     return final_image
 
 
+def save_file_with_paths(query_path, preds_paths, positives_paths, output_path):
+    file_content = []
+    file_content.append("Query path:")
+    file_content.append(query_path + "\n")
+    file_content.append("Predictions paths:")
+    file_content.append("\n".join(preds_paths) + "\n")
+    file_content.append("Positives paths:")
+    file_content.append("\n".join(positives_paths) + "\n")
+    with open(output_path, "w") as file:
+        _ = file.write("\n".join(file_content))
+
+
 def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
+    """For each query, save an image containing the query and its predictions,
+    and a file with the paths of the query, its predictions and its positives.
+
+    Parameters
+    ----------
+    predictions : np.array of shape [num_queries x num_preds_to_viz], with the preds
+        for each query
+    eval_ds : TestDataset
+    output_folder : str / Path with the path to save the predictions
+    save_only_wrong_preds : bool, if True save only the wrongly predicted queries,
+        i.e. the ones where the first pred is uncorrect (further than 25 m)
+    """
     positives_per_query = eval_ds.get_positives()
     os.makedirs(f"{output_folder}/preds", exist_ok=True)
-    for query_index, preds in enumerate(tqdm(predictions, ncols=80, desc="Saving preds")):
+    for query_index, preds in enumerate(tqdm(predictions, ncols=80, desc=f"Saving preds in {output_folder}")):
         query_path = eval_ds.queries_paths[query_index]
         list_of_images_paths = [query_path]
         # List of None (query), True (correct preds) or False (wrong preds)
@@ -80,6 +104,12 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
         prediction_image = build_prediction_image(list_of_images_paths, preds_correct)
         pred_image_path = f"{output_folder}/preds/{query_index:03d}.jpg"
         prediction_image.save(pred_image_path)
-        with open(f"{output_folder}/preds/{query_index:03d}.txt", "w") as file:
-            _ = file.write("\n".join(list_of_images_paths) + "\n")
+        
+        positives_paths = [eval_ds.database_paths[idx] for idx in positives_per_query[query_index]]
+        save_file_with_paths(
+            query_path=list_of_images_paths[0],
+            preds_paths=list_of_images_paths[1:],
+            positives_paths=positives_paths,
+            output_path=f"{output_folder}/preds/{query_index:03d}.txt"
+        )
 
