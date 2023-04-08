@@ -28,6 +28,7 @@ model = models.get_model(args.method, args.backbone, args.descriptors_dimension)
 model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.dataset_folder, positive_dist_threshold=args.positive_dist_threshold)
+logging.info(f"Testing on {test_ds}")
 
 with torch.inference_mode():
     logging.debug("Extracting database descriptors for evaluation/testing")
