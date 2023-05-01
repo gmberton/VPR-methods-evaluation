@@ -15,7 +15,9 @@ def parse_arguments():
                         help="_")
     parser.add_argument("--descriptors_dimension", type=int, default=None,
                         help="_")
-    parser.add_argument("--dataset_folder", type=str, default="/home/gabriele/vg_datasets/retrieval/st_lucia/images/test", #required=True,
+    parser.add_argument("--database_folder", type=str, required=True,
+                        help="_")
+    parser.add_argument("--queries_folder", type=str, required=True,
                         help="_")
     parser.add_argument("--num_workers", type=int, default=4,
                         help="_")
@@ -33,8 +35,6 @@ def parse_arguments():
                         help="_")
     
     args = parser.parse_args()
-    if not os.path.exists(args.dataset_folder):
-        raise FileNotFoundError(f"Folder {args.dataset_folder} does not exist")
     
     if args.method == "netvlad":
         if args.backbone not in [None, "VGG16"]:

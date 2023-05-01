@@ -1,19 +1,52 @@
 
 import os
 import numpy as np
+from glob import glob
 from PIL import Image
 import torch.utils.data as data
 import torchvision.transforms as transforms
 from sklearn.neighbors import NearestNeighbors
 
 
-def open_image(path):
-    return Image.open(path).convert("RGB")
+def read_images_paths(dataset_folder):
+    """Find images within 'dataset_folder'. If the file
+    'dataset_folder'_images_paths.txt exists, read paths from such file.
+    Otherwise, use glob(). Keeping the paths in the file speeds up computation,
+    because using glob over large folders might be slow.
+    
+    Parameters
+    ----------
+    dataset_folder : str, folder containing JPEG images
+    
+    Returns
+    -------
+    images_paths : list[str], paths of JPEG images within dataset_folder
+    """
+    
+    if not os.path.exists(dataset_folder):
+        raise FileNotFoundError(f"Folder {dataset_folder} does not exist")
+    
+    file_with_paths = dataset_folder + "_images_paths.txt"
+    if os.path.exists(file_with_paths):
+        print(f"Reading paths of images within {dataset_folder} from {file_with_paths}")
+        with open(file_with_paths, "r") as file:
+            images_paths = file.read().splitlines()
+        images_paths = [dataset_folder + "/" + path for path in images_paths]
+        # Sanity check that paths within the file exist
+        if not os.path.exists(images_paths[0]):
+            raise FileNotFoundError(f"Image with path {images_paths[0]} "
+                                    f"does not exist within {dataset_folder}. It is likely "
+                                    f"that the content of {file_with_paths} is wrong.")
+    else:
+        print(f"Searching test images in {dataset_folder} with glob()")
+        images_paths = sorted(glob(f"{dataset_folder}/**/*.jpg", recursive=True))
+        if len(images_paths) == 0:
+            raise FileNotFoundError(f"Directory {dataset_folder} does not contain any JPEG images")
+    return images_paths
 
 
 class TestDataset(data.Dataset):
-    def __init__(self, dataset_folder, database_folder="images/test/database",
-                 queries_folder="images/test/queries", positive_dist_threshold=25):
+    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25):
         """Dataset with images from database and queries, used for validation and test.
         Parameters
         ----------
@@ -25,34 +58,11 @@ class TestDataset(data.Dataset):
             be considered a positive.
         """
         super().__init__()
-        self.dataset_folder = dataset_folder
-        self.dataset_name = os.path.basename(dataset_folder)
         
-        if not os.path.exists(self.dataset_folder):
-            raise FileNotFoundError(f"Folder {self.dataset_folder} does not exist")
+        self.database_paths = read_images_paths(database_folder)
+        self.queries_paths = read_images_paths(queries_folder)
         
-        # Read paths for database and queries from all_images_paths.txt
-        images_paths_file = f"{dataset_folder}/all_images_paths.txt"
-        if not os.path.exists(images_paths_file):
-            raise FileNotFoundError(f"File {images_paths_file} does not exist. This file should contain "
-                                    "the paths of all images, to avoid having to glob() them every "
-                                    "time, which is expensive for the largest (i.e. realistic) datasets")
-        with open(images_paths_file, "r") as file:
-            all_images_paths = file.read().splitlines()
-        self.database_paths = [path for path in all_images_paths if path.startswith(database_folder)]
-        self.queries_paths = [path for path in all_images_paths if path.startswith(queries_folder)]
-        
-        if not os.path.exists(self.dataset_folder + "/" + self.database_paths[0]):
-            raise FileNotFoundError(f"Database image with path {self.database_paths[0]} "
-                                    f"does not exist within {self.dataset_folder}. It is likely "
-                                    f"that the content of {images_paths_file} is wrong.")
-        
-        if not os.path.exists(self.dataset_folder + "/" + self.queries_paths[0]):
-            raise FileNotFoundError(f"Query images with path {self.queries_paths[0]} "
-                                    f"does not exist within {self.dataset_folder}. It is likely "
-                                    f"that the content of {images_paths_file} is wrong.")
-        
-        # Read UTM coordinates, which should be contained within the paths
+        # Read UTM coordinates, which must be contained within the paths
         # The format must be path/to/file/@utm_easting@utm_northing@...@.jpg
         try:
             # This is just a sanity check
@@ -85,8 +95,8 @@ class TestDataset(data.Dataset):
         ])
     
     def __getitem__(self, index):
-        image_path = self.dataset_folder + "/" + self.images_paths[index]
-        pil_img = open_image(image_path)
+        image_path = self.images_paths[index]
+        pil_img = Image.open(image_path).convert("RGB")
         normalized_img = self.base_transform(pil_img)
         return normalized_img, index
     
@@ -94,7 +104,7 @@ class TestDataset(data.Dataset):
         return len(self.images_paths)
     
     def __repr__(self):
-        return f"< {self.dataset_name} - #queries: {self.queries_num}; #database: {self.database_num} >"
+        return f"< #queries: {self.queries_num}; #database: {self.database_num} >"
     
     def get_positives(self):
         return self.positives_per_query

@@ -27,7 +27,8 @@ logging.info(f"The outputs are being saved in {output_folder}")
 model = models.get_model(args.method, args.backbone, args.descriptors_dimension)
 model = model.eval().to(args.device)
 
-test_ds = TestDataset(args.dataset_folder, positive_dist_threshold=args.positive_dist_threshold)
+test_ds = TestDataset(args.database_folder, args.queries_folder,
+                      positive_dist_threshold=args.positive_dist_threshold)
 logging.info(f"Testing on {test_ds}")
 
 with torch.inference_mode():
