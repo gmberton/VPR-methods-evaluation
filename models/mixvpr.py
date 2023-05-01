@@ -131,7 +131,7 @@ def get_mixvpr(descriptors_dimension):
         gdown.download(url=url, output=file_path, fuzzy=True)
     state_dict = torch.load(file_path)
     model.load_state_dict(state_dict)
-    model = model.eval().cuda()
+    model = model.eval()
     
     return model
 

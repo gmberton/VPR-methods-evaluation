@@ -129,7 +129,7 @@ def get_convap(descriptors_dimension):
     model = ConvAPModel(agg_config=model_config)
     state_dict = torch.load(file_path)
     model.load_state_dict(state_dict)
-    model = model.eval().cuda()
+    model = model.eval()
 
     return model
 
