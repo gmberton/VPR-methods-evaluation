@@ -15,7 +15,7 @@ cd vpr-codebase
 
 git clone https://github.com/gmberton/VPR-datasets-downloader
 cd VPR-datasets-downloader
-python3 download_svox.py
+python3 download_st_lucia.py
 
 cd ..
 
@@ -25,6 +25,7 @@ python3 main.py --method cosplace --backbone ResNet18 --descriptors_dimension 51
     --database_folder ../VPR-datasets-downloader/datasets/st_lucia/images/test/database \
     --queries_folder ../VPR-datasets-downloader/datasets/st_lucia/images/test/queries
 ```
+This should produce this as output `R@1: 98.8, R@5: 99.7, R@10: 99.9, R@20: 100.0`, which will be saved in a log file under `./logs/`
 
 You can easily change the paths for different datasets, and you can use any of the following methods: NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR.
 Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4069 (with PCA).
