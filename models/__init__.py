@@ -19,6 +19,9 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = mixvpr.get_mixvpr(descriptors_dimension=descriptors_dimension)
     elif method == "convap":
         model = convap.get_convap(descriptors_dimension=descriptors_dimension)
-
+    elif method == "eigenplaces":
+        model = torch.hub.load("gmberton/eigenplaces", "get_trained_model",
+                               backbone=backbone, fc_output_dim=descriptors_dimension)
+    
     return model
 

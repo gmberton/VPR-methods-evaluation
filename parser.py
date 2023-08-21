@@ -8,7 +8,7 @@ def parse_arguments():
     parser.add_argument("--positive_dist_threshold", type=int, default=25,
                         help="distance (in meters) for a prediction to be considered a positive")
     parser.add_argument("--method", type=str, default="cosplace",
-                        choices=["netvlad", "sfrs", "cosplace", "convap", "mixvpr"],
+                        choices=["netvlad", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces"],
                         help="_")
     parser.add_argument("--backbone", type=str, default=None,
                         choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152"],
@@ -84,6 +84,18 @@ def parse_arguments():
             raise ValueError("When using Conv-AP the backbone must be None or ResNet50")
         if args.descriptors_dimension not in [None, 128, 512, 4096]:
             raise ValueError("When using Conv-AP the descriptors_dimension must be one of [None, 128, 512, 4096]")
+    
+    elif args.method == "eigenplaces":
+        if args.backbone is None:
+            args.backbone = "ResNet50"
+        if args.descriptors_dimension is None:
+            args.descriptors_dimension = 512
+        if args.backbone == "VGG16" and args.descriptors_dimension not in [512]:
+            raise ValueError("When using EigenPlaces with VGG16 the descriptors_dimension must be in [512]")
+        if args.backbone == "ResNet18" and args.descriptors_dimension not in [256, 512]:
+            raise ValueError("When using EigenPlaces with ResNet18 the descriptors_dimension must be in [256, 512]")
+        if args.backbone in ["ResNet50", "ResNet101", "ResNet152"] and args.descriptors_dimension not in [128, 256, 512, 2048]:
+            raise ValueError(f"When using EigenPlaces with {args.backbone} the descriptors_dimension must be in [128, 256, 512, 2048]")
     
     return args
 
