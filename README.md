@@ -4,6 +4,7 @@
 This repo is used to easily evaluate pre-trained Visual Place Recognition methods.
 A number of trained models are supported (namely NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR and EigenPlaces) and it uses the weights released by the respective authors.
 
+To see the results of all these methods on a large number (14!) VPR datasets check out our ICCV 2023 paper [EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition](https://arxiv.org/abs/2308.10832).
 
 ## How to use
 
