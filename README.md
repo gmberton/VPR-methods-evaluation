@@ -28,7 +28,7 @@ python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=51
 ```
 This should produce this as output `R@1: 98.8, R@5: 99.7, R@10: 99.9, R@20: 100.0`, which will be saved in a log file under `./logs/`
 
-You can easily change the paths for different datasets, and you can use any of the following methods: NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR and EigenPlaces.
+You can easily change the paths for different datasets, and you can use any of the following methods: NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc.
 Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4069 (with PCA).
 
 
@@ -65,5 +65,5 @@ If you use this repository please cite our benchmark paper
 }
 ```
 
-Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR) and [EigenPlaces](https://github.com/gmberton/EigenPlaces) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, excpet for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
+Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, excpet for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
 

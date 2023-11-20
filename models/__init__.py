@@ -2,6 +2,7 @@
 import torch
 
 from models import sfrs
+from models import anyloc
 from models import convap
 from models import mixvpr
 from models import netvlad
@@ -22,6 +23,8 @@ def get_model(method, backbone=None, descriptors_dimension=None):
     elif method == "eigenplaces":
         model = torch.hub.load("gmberton/eigenplaces", "get_trained_model",
                                backbone=backbone, fc_output_dim=descriptors_dimension)
+    elif method == "anyloc":
+        model = anyloc.AnyLocWrapper()
     
     return model
 
