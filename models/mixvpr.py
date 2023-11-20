@@ -114,7 +114,7 @@ class MixVPRModel(torch.nn.Module):
         self.aggregator = MixVPR(**agg_config)
 
     def forward(self, x):
-        x = transforms.Resize([320, 320])(x)
+        x = transforms.Resize([320, 320], antialias=True)(x)
         x = self.backbone(x)
         x = self.aggregator(x)
         return x
