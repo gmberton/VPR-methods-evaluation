@@ -4,7 +4,7 @@
 This repo is used to easily evaluate pre-trained Visual Place Recognition methods, and is released as part of the [ICCV 2023 EigenPlaces paper](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html).
 A number of trained models are supported (namely NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces and AnyLoc) and it uses the weights released by the respective authors.
 
-To see the results of these methods on a large number (14!) VPR datasets check out our ICCV 2023 paper [EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition](https://arxiv.org/abs/2308.10832).
+To see the results of these methods on a large number (14!) of VPR datasets check out the EigenPlaces paper.
 
 [[ICCV 2023 Open Access](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html)] [[ArXiv](https://arxiv.org/abs/2308.10832)] [[BibTex](https://github.com/gmberton/EigenPlaces#cite)]
 
