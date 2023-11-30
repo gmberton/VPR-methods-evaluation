@@ -1,10 +1,12 @@
 
 # VPR-methods-evaluation
 
-This repo is used to easily evaluate pre-trained Visual Place Recognition methods.
-A number of trained models are supported (namely NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR and EigenPlaces) and it uses the weights released by the respective authors.
+This repo is used to easily evaluate pre-trained Visual Place Recognition methods, and is released as part of the [ICCV 2023 EigenPlaces paper](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html).
+A number of trained models are supported (namely NetVLAD, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces and AnyLoc) and it uses the weights released by the respective authors.
 
-To see the results of all these methods on a large number (14!) VPR datasets check out our ICCV 2023 paper [EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition](https://arxiv.org/abs/2308.10832).
+To see the results of these methods on a large number (14!) VPR datasets check out our ICCV 2023 paper [EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition](https://arxiv.org/abs/2308.10832).
+
+[[ICCV 2023 Open Access](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html)] [[ArXiv](https://arxiv.org/abs/2308.10832)] [[BibTex](https://github.com/gmberton/EigenPlaces#cite)]
 
 ## How to use
 
@@ -53,17 +55,17 @@ Given that saving predictions for each query might take long, you can also pass 
 
 ## Acknowledgements
 
-If you use this repository please cite our benchmark paper
+If you use this repository please cite our paper
 ```
-@inProceedings{Berton_CVPR_2022_benchmark,
-    author    = {Berton, Gabriele and Mereu, Riccardo and Trivigno, Gabriele and Masone, Carlo and
-                 Csurka, Gabriela and Sattler, Torsten and Caputo, Barbara},
-    title     = {Deep Visual Geo-localization Benchmark},
-    booktitle = {CVPR},
-    month     = {June},
-    year      = {2022},
+@inproceedings{Berton_2023_EigenPlaces,
+  title={EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition},
+  author={Berton, Gabriele and Trivigno, Gabriele and Caputo, Barbara and Masone, Carlo},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  year={2023},
+  month={October},
+  pages={11080-11090}
 }
 ```
 
 Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, excpet for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
-
+Make sure to cite them if you use each model's code.
