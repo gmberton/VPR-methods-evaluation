@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from scipy.io import loadmat
 
-from models import utils
+from vpr_models import utils
 
 EPS = 1e-6
 

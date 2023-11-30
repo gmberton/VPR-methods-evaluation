@@ -9,7 +9,7 @@ from datetime import datetime
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
 
-import models
+import vpr_models
 import parser
 import commons
 import visualizations
@@ -24,7 +24,7 @@ logging.info(f"Arguments: {args}")
 logging.info(f"Testing with {args.method} with a {args.backbone} backbone and descriptors dimension {args.descriptors_dimension}")
 logging.info(f"The outputs are being saved in {output_folder}")
 
-model = models.get_model(args.method, args.backbone, args.descriptors_dimension)
+model = vpr_models.get_model(args.method, args.backbone, args.descriptors_dimension)
 model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.database_folder, args.queries_folder,

@@ -4,7 +4,7 @@
 import torch
 import torchvision.transforms as tfm
 
-from models import utils
+from vpr_models import utils
 
 
 class SFRSModel(torch.nn.Module):
