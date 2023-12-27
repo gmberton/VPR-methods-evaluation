@@ -22,7 +22,7 @@ python3 download_st_lucia.py
 
 cd ..
 
-git clone https://github.com/gmberton/VPR-methods-evaluation
+git clone --recursive https://github.com/gmberton/VPR-methods-evaluation
 cd VPR-methods-evaluation
 python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=512 \
     --database_folder=../VPR-datasets-downloader/datasets/st_lucia/images/test/database \
@@ -32,6 +32,8 @@ This should produce this as output `R@1: 98.8, R@5: 99.7, R@10: 99.9, R@20: 100.
 
 You can easily change the paths for different datasets, and you can use any of the following methods: NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD.
 Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4069 (with PCA).
+
+NB: make sure to use the `git clone --recursive`, otherwise some third party (like AP-GeM) models can't be used.
 
 
 ### Visualize predictions
