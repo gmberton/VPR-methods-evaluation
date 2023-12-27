@@ -1,12 +1,14 @@
 
 import torch
 
-from vpr_models import sfrs, salad, anyloc, convap, mixvpr, netvlad
+from vpr_models import sfrs, apgem, salad, anyloc, convap, mixvpr, netvlad
 
 
 def get_model(method, backbone=None, descriptors_dimension=None):
     if method == "sfrs":
         model = sfrs.SFRSModel()
+    elif method == "apgem":
+        model = apgem.GeM()
     elif method == "netvlad":
         model = netvlad.NetVLAD(descriptors_dimension=descriptors_dimension)
     elif method == "cosplace":
