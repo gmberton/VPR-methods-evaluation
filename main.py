@@ -28,7 +28,8 @@ model = vpr_models.get_model(args.method, args.backbone, args.descriptors_dimens
 model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.database_folder, args.queries_folder,
-                      positive_dist_threshold=args.positive_dist_threshold)
+                      positive_dist_threshold=args.positive_dist_threshold,
+                      resize = args.image_resolution)
 logging.info(f"Testing on {test_ds}")
 
 with torch.inference_mode():
