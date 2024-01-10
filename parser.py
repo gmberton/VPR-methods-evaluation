@@ -35,7 +35,8 @@ def parse_arguments():
     parser.add_argument("--save_only_wrong_preds", action="store_true",
                         help="set to true if you want to save predictions only for "
                         "wrongly predicted queries")
-    
+    parser.add_argument("--image_resolution", type=int, default=-1,
+                        help="set the smallest dimension of all images to this value")
     args = parser.parse_args()
     
     if args.method == "netvlad":
