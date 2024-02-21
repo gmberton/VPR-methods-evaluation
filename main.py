@@ -29,7 +29,7 @@ model = model.eval().to(args.device)
 
 test_ds = TestDataset(args.database_folder, args.queries_folder,
                       positive_dist_threshold=args.positive_dist_threshold,
-                      resize=args.image_resolution)
+                      image_size=args.image_size)
 logging.info(f"Testing on {test_ds}")
 
 with torch.inference_mode():
