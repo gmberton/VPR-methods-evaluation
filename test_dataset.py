@@ -93,7 +93,7 @@ class TestDataset(data.Dataset):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
         if image_size:
-            transformations.append(transforms.Resize(size=image_size))
+            transformations.append(transforms.Resize(size=image_size, antialias=True))
         self.base_transform = transforms.Compose(transformations)
     
     def __getitem__(self, index):
