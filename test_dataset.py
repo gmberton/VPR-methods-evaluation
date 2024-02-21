@@ -46,7 +46,7 @@ def read_images_paths(dataset_folder):
 
 
 class TestDataset(data.Dataset):
-    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25):
+    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25, image_size=None):
         """Dataset with images from database and queries, used for validation and test.
         Parameters
         ----------
@@ -88,11 +88,13 @@ class TestDataset(data.Dataset):
         
         self.database_num = len(self.database_paths)
         self.queries_num = len(self.queries_paths)
-        
-        self.base_transform = transforms.Compose([
+        transformations = [
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ])
+        ]
+        if image_size:
+            transformations.append(transforms.Resize(size=image_size))
+        self.base_transform = transforms.Compose(transformations)
     
     def __getitem__(self, index):
         image_path = self.images_paths[index]
