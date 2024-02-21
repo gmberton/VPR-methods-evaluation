@@ -35,8 +35,9 @@ def parse_arguments():
     parser.add_argument("--save_only_wrong_preds", action="store_true",
                         help="set to true if you want to save predictions only for "
                         "wrongly predicted queries")
-    parser.add_argument("--image_size", type=int, default=-1,
-                        help="set the smallest edge of all images to this value, while keeping aspect ratio")
+    parser.add_argument("--image_size", type=int, default=None, nargs="+",
+                        help="Resizing shape for images (HxW). If a single int is passed, set the"
+                        "smallest edge of all images to this value, while keeping aspect ratio")
     args = parser.parse_args()
     
     if args.method == "netvlad":
@@ -110,6 +111,9 @@ def parse_arguments():
     elif args.method == "salad":
         args.backbone = "DINOv2"
         args.descriptors_dimension = 8448
+    
+    if args.image_size and len(args.image_size) > 2:
+        raise ValueError(f"The --image_size parameter can only take up to 2 values, but has received {len(args.image_size)}.")
     
     return args
 

@@ -46,7 +46,7 @@ def read_images_paths(dataset_folder):
 
 
 class TestDataset(data.Dataset):
-    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25, image_size=-1):
+    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25, image_size=None):
         """Dataset with images from database and queries, used for validation and test.
         Parameters
         ----------
@@ -92,7 +92,7 @@ class TestDataset(data.Dataset):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
-        if image_size != -1:
+        if image_size:
             transformations.append(transforms.Resize(size=image_size))
         self.base_transform = transforms.Compose(transformations)
     
