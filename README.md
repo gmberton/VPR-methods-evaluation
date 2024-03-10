@@ -8,9 +8,32 @@ To see the results of these methods on a large number (14!) of VPR datasets chec
 
 [[ICCV 2023 Open Access](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html)] [[ArXiv](https://arxiv.org/abs/2308.10832)] [[Cite/BibTex](https://github.com/gmberton/EigenPlaces#cite)]
 
-## How to use
+## Basic use
+
+Simply run this to try a method on a (unlabeled) toy dataset contained in assets
+
+```
+git clone --recursive https://github.com/gmberton/VPR-methods-evaluation
+cd VPR-methods-evaluation
+python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=512 \
+    --database_folder=toy_dataset/database --queries_folder=toy_dataset/queries \
+    --no_labels --image_size 200 200 --num_preds_to_save 3 \
+    --log_dir toy_experiment
+```
+
+which will generate images like this within the `logs/toy_experiment` visual predictions for each query like this one
+
+<p float="left">
+  <img src="https://raw.githubusercontent.com/gmberton/VPR-methods-evaluation/master/images/no_labels_pred.jpg"  height="200"/>
+</p>
+
+You can also use this on your own dataset (or any two directories) simply changing the paths parameters.
+
+## How to use with labels
 
 The code is designed to be readily used with our [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader) repo, so that using a few simple commands you can download a dataset and test any model on it. The VPR-datasets-downloader code allows you to download multiple VPR datasets that are automatically formatted in the same format as used by this repo.
+
+The format needed by this repo to compute recalls is that each image should use as filename `path/to/image/@UTM_east@UTM_north@whatever@.jpg`
 
 ```
 mkdir VPR-codebase
