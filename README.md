@@ -10,7 +10,7 @@ To see the results of these methods on a large number (14!) of VPR datasets chec
 
 ## Basic use
 
-Simply run this to try a method on a (unlabeled) toy dataset contained in assets
+Simply run this to try a method on a (unlabeled) toy dataset contained in assets. This is super lightweight and will take a few seconds even running on a CPU of a laptop.
 
 ```
 git clone --recursive https://github.com/gmberton/VPR-methods-evaluation
@@ -29,7 +29,7 @@ which will generate images like this within the `logs/toy_experiment` visual pre
 
 You can also use this on your own dataset (or any two directories) simply changing the paths parameters.
 
-## How to use with labels
+## How to use on a labelled dataset
 
 The code is designed to be readily used with our [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader) repo, so that using a few simple commands you can download a dataset and test any model on it. The VPR-datasets-downloader code allows you to download multiple VPR datasets that are automatically formatted in the same format as used by this repo.
 
