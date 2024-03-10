@@ -24,12 +24,15 @@ def parse_arguments():
                         help="_")
     parser.add_argument("--batch_size", type=int, default=4,
                         help="set to 1 if database images may have different resolution")
-    parser.add_argument("--exp_name", type=str, default="default",
-                        help="experiment name, output logs will be saved under logs/exp_name")
+    parser.add_argument("--log_dir", type=str, default="default",
+                        help="experiment name, output logs will be saved under logs/log_dir")
     parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"],
                         help="_")
     parser.add_argument("--recall_values", type=int, nargs="+", default=[1, 5, 10, 20],
                         help="values for recall (e.g. recall@1, recall@5)")
+    parser.add_argument("--no_labels", action="store_true",
+                        help="set to true if you have no labels and just want to "
+                        "do standard image retrieval given two folders of queries and DB")
     parser.add_argument("--num_preds_to_save", type=int, default=0,
                         help="set != 0 if you want to save predictions for each query")
     parser.add_argument("--save_only_wrong_preds", action="store_true",
@@ -39,6 +42,8 @@ def parse_arguments():
                         help="Resizing shape for images (HxW). If a single int is passed, set the"
                         "smallest edge of all images to this value, while keeping aspect ratio")
     args = parser.parse_args()
+    
+    args.use_labels = not args.no_labels
     
     if args.method == "netvlad":
         if args.backbone not in [None, "VGG16"]:

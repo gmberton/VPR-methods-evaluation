@@ -46,7 +46,8 @@ def read_images_paths(dataset_folder):
 
 
 class TestDataset(data.Dataset):
-    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25, image_size=None):
+    def __init__(self, database_folder, queries_folder, positive_dist_threshold=25,
+                 image_size=None, use_labels=True):
         """Dataset with images from database and queries, used for validation and test.
         Parameters
         ----------
@@ -62,51 +63,52 @@ class TestDataset(data.Dataset):
         self.database_paths = read_images_paths(database_folder)
         self.queries_paths = read_images_paths(queries_folder)
         
-        # Read UTM coordinates, which must be contained within the paths
-        # The format must be path/to/file/@utm_easting@utm_northing@...@.jpg
-        try:
-            # This is just a sanity check
-            image_path = self.database_paths[0]
-            utm_east = float(image_path.split("@")[1])
-            utm_north = float(image_path.split("@")[2])
-        except:
-            raise ValueError("The path of images should be path/to/file/@utm_east@utm_north@...@.jpg "
-                             f"but it is {image_path}, which does not contain the UTM coordinates.")
+        self.images_paths = list(self.database_paths) + list(self.queries_paths)
         
-        self.database_utms = np.array([(path.split("@")[1], path.split("@")[2]) for path in self.database_paths]).astype(float)
-        self.queries_utms = np.array([(path.split("@")[1], path.split("@")[2]) for path in self.queries_paths]).astype(float)
+        self.num_database = len(self.database_paths)
+        self.num_queries = len(self.queries_paths)
         
-        # Find positives_per_query, which are within positive_dist_threshold (default 25 meters)
-        knn = NearestNeighbors(n_jobs=-1)
-        knn.fit(self.database_utms)
-        self.positives_per_query = knn.radius_neighbors(self.queries_utms,
-                                                        radius=positive_dist_threshold,
-                                                        return_distance=False)
+        if use_labels:
+            # Read UTM coordinates, which must be contained within the paths
+            # The format must be path/to/file/@utm_easting@utm_northing@...@.jpg
+            try:
+                # This is just a sanity check
+                image_path = self.database_paths[0]
+                utm_east = float(image_path.split("@")[1])
+                utm_north = float(image_path.split("@")[2])
+            except:
+                raise ValueError("The path of images should be path/to/file/@utm_east@utm_north@...@.jpg "
+                                 f"but it is {image_path}, which does not contain the UTM coordinates.")
+            
+            self.database_utms = np.array([(path.split("@")[1], path.split("@")[2]) for path in self.database_paths]).astype(float)
+            self.queries_utms = np.array([(path.split("@")[1], path.split("@")[2]) for path in self.queries_paths]).astype(float)
+            
+            # Find positives_per_query, which are within positive_dist_threshold (default 25 meters)
+            knn = NearestNeighbors(n_jobs=-1)
+            knn.fit(self.database_utms)
+            self.positives_per_query = knn.radius_neighbors(self.queries_utms,
+                                                            radius=positive_dist_threshold,
+                                                            return_distance=False)
         
-        self.images_paths = [p for p in self.database_paths]
-        self.images_paths += [p for p in self.queries_paths]
-        
-        self.database_num = len(self.database_paths)
-        self.queries_num = len(self.queries_paths)
         transformations = [
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
         if image_size:
             transformations.append(transforms.Resize(size=image_size, antialias=True))
-        self.base_transform = transforms.Compose(transformations)
+        self.transform = transforms.Compose(transformations)
     
     def __getitem__(self, index):
         image_path = self.images_paths[index]
         pil_img = Image.open(image_path).convert("RGB")
-        normalized_img = self.base_transform(pil_img)
+        normalized_img = self.transform(pil_img)
         return normalized_img, index
     
     def __len__(self):
         return len(self.images_paths)
     
     def __repr__(self):
-        return f"< #queries: {self.queries_num}; #database: {self.database_num} >"
+        return f"< #queries: {self.num_queries}; #database: {self.num_database} >"
     
     def get_positives(self):
         return self.positives_per_query

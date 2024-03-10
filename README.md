@@ -42,7 +42,7 @@ Predictions can be easily visualized through the `num_preds_to_save` parameter. 
 
 ```
 python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=512 \
-    --num_preds_to_save=3 --exp_name=cosplace_on_stlucia \
+    --num_preds_to_save=3 --log_dir=cosplace_on_stlucia \
     --database_folder=../VPR-datasets-downloader/datasets/st_lucia/images/test/database \
     --queries_folder=../VPR-datasets-downloader/datasets/st_lucia/images/test/queries
 ```
