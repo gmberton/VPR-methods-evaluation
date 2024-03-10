@@ -38,7 +38,13 @@ def build_prediction_image(images_paths, preds_correct):
     For each image, if is_correct then draw a green/red box.
     """
     assert len(images_paths) == len(preds_correct)
-    labels = ["Query"] + [f"Pred{i} - {is_correct}" for i, is_correct in enumerate(preds_correct[1:])]
+    labels = ["Query"]
+    for i, is_correct in enumerate(preds_correct[1:]):
+        if is_correct is None:
+            labels.append(f"Pred{i}")
+        else:
+            labels.append(f"Pred{i} - {is_correct}")
+    
     num_images = len(images_paths)
     images = [np.array(Image.open(path).convert("RGB")) for path in images_paths]
     for img, correct in zip(images, preds_correct):
