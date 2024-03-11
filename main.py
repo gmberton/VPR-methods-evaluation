@@ -39,7 +39,7 @@ with torch.inference_mode():
     database_dataloader = DataLoader(dataset=database_subset_ds, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
     all_descriptors = np.empty((len(test_ds), args.descriptors_dimension), dtype="float32")
-    for images, indices in tqdm(database_dataloader, ncols=100):
+    for images, indices in tqdm(database_dataloader):
         descriptors = model(images.to(args.device))
         descriptors = descriptors.cpu().numpy()
         all_descriptors[indices.numpy(), :] = descriptors
@@ -49,7 +49,7 @@ with torch.inference_mode():
                                 list(range(test_ds.num_database, test_ds.num_database + test_ds.num_queries)))
     queries_dataloader = DataLoader(dataset=queries_subset_ds, num_workers=args.num_workers,
                                     batch_size=1)
-    for images, indices in tqdm(queries_dataloader, ncols=100):
+    for images, indices in tqdm(queries_dataloader):
         descriptors = model(images.to(args.device))
         descriptors = descriptors.cpu().numpy()
         all_descriptors[indices.numpy(), :] = descriptors

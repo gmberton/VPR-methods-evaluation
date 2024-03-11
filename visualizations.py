@@ -99,7 +99,7 @@ def save_preds(predictions, eval_ds, log_dir, save_only_wrong_preds=None, use_la
     
     viz_dir = (log_dir / "preds")
     viz_dir.mkdir()
-    for query_index, preds in enumerate(tqdm(predictions, ncols=80, desc=f"Saving preds in {viz_dir}")):
+    for query_index, preds in enumerate(tqdm(predictions, desc=f"Saving preds in {viz_dir}")):
         query_path = eval_ds.queries_paths[query_index]
         list_of_images_paths = [query_path]
         # List of None (query), True (correct preds) or False (wrong preds)
