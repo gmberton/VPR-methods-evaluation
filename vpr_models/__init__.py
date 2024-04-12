@@ -28,7 +28,7 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = anyloc.AnyLocWrapper()
     elif method == "salad":
         model = salad.SaladWrapper()
-    elif method == "salad_indoor":
+    elif method == "salad-indoor":
         model = salad.SaladIndoorWrapper()
     
     return model

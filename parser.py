@@ -106,7 +106,7 @@ def parse_arguments():
             raise ValueError(f"When using EigenPlaces with {args.backbone} the descriptors_dimension must be in [128, 256, 512, 2048]")
             
     elif args.method == "eigenplaces-indoor":
-        args.backbone = "Resnet50"
+        args.backbone = "ResNet50"
         args.descriptors_dimension = 2048
     
     elif args.method == "apgem":
@@ -122,7 +122,7 @@ def parse_arguments():
         args.descriptors_dimension = 8448
         
     elif args.method == "salad-indoor":
-        args.backbone = "DINOv2"
+        args.backbone = "Dinov2"
         args.descriptors_dimension = 8448
     
     if args.image_size and len(args.image_size) > 2:

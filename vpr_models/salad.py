@@ -21,7 +21,7 @@ class SaladIndoorWrapper(torch.nn.Module):
     def __init__(self):
         super().__init__()
         self.model = torch.hub.load("Enrico-Chiavassa/Indoor-VPR", "get_trained_model",
-                                    backbone="Dinov2", fc_output_dim=8448)
+                                    method="salad", backbone="Dinov2", fc_output_dim=8448)
     def forward(self, images):
         b, c, h, w = images.shape
         # DINO wants height and width as multiple of 14, therefore resize them
