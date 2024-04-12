@@ -20,11 +20,16 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = convap.get_convap(descriptors_dimension=descriptors_dimension)
     elif method == "eigenplaces":
         model = torch.hub.load("gmberton/eigenplaces", "get_trained_model",
-                               backbone=backbone, fc_output_dim=descriptors_dimension)
+                                backbone=backbone, fc_output_dim=descriptors_dimension)
+    elif method == "eigenplaces-indoor":
+        model = torch.hub.load("Enrico-Chiavassa/Indoor-VPR", "get_trained_model",
+                                backbone=backbone, fc_output_dim=descriptors_dimension)
     elif method == "anyloc":
         model = anyloc.AnyLocWrapper()
     elif method == "salad":
         model = salad.SaladWrapper()
+    elif method == "salad_indoor":
+        model = salad.SaladIndoorWrapper()
     
     return model
 
