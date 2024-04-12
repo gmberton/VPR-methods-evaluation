@@ -8,8 +8,8 @@ def parse_arguments():
     parser.add_argument("--positive_dist_threshold", type=int, default=25,
                         help="distance (in meters) for a prediction to be considered a positive")
     parser.add_argument("--method", type=str, default="cosplace",
-                        choices=["netvlad", "apgem", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces",
-                                 "anyloc", "salad"],
+                        choices=["netvlad", "apgem", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces", 
+                                 "eigenplaces-indoor", "anyloc", "salad", "salad-indoor"],
                         help="_")
     parser.add_argument("--backbone", type=str, default=None,
                         choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152"],
@@ -104,6 +104,10 @@ def parse_arguments():
             raise ValueError("When using EigenPlaces with ResNet18 the descriptors_dimension must be in [256, 512]")
         if args.backbone in ["ResNet50", "ResNet101", "ResNet152"] and args.descriptors_dimension not in [128, 256, 512, 2048]:
             raise ValueError(f"When using EigenPlaces with {args.backbone} the descriptors_dimension must be in [128, 256, 512, 2048]")
+            
+    elif args.method == "eigenplaces-indoor":
+        args.backbone = "ResNet50"
+        args.descriptors_dimension = 2048
     
     elif args.method == "apgem":
         args.backbone = "Resnet101"
@@ -115,6 +119,10 @@ def parse_arguments():
     
     elif args.method == "salad":
         args.backbone = "DINOv2"
+        args.descriptors_dimension = 8448
+        
+    elif args.method == "salad-indoor":
+        args.backbone = "Dinov2"
         args.descriptors_dimension = 8448
     
     if args.image_size and len(args.image_size) > 2:
