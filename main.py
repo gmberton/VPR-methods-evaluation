@@ -57,6 +57,10 @@ with torch.inference_mode():
 queries_descriptors = all_descriptors[test_ds.num_database:]
 database_descriptors = all_descriptors[:test_ds.num_database]
 
+if args.save_descriptors:
+    args.descriptors_output_dir = log_dir if not args.descriptors_output_dir else Path(args.descriptors_output_dir)
+    torch.save(all_descriptors, args.descriptors_output_dir / "descriptors.pt")
+
 # Use a kNN to find predictions
 faiss_index = faiss.IndexFlatL2(args.descriptors_dimension)
 faiss_index.add(database_descriptors)

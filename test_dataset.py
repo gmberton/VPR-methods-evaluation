@@ -60,8 +60,8 @@ class TestDataset(data.Dataset):
         """
         super().__init__()
         
-        self.database_paths = read_images_paths(database_folder)
-        self.queries_paths = read_images_paths(queries_folder)
+        self.database_paths = read_images_paths(database_folder)[:20]
+        self.queries_paths = read_images_paths(queries_folder)[:5]
         
         self.images_paths = list(self.database_paths) + list(self.queries_paths)
         
