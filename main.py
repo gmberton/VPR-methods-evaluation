@@ -10,15 +10,20 @@ from datetime import datetime
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
 
+import save
 import vpr_models
 import parser
 import commons
 import visualizations
 from test_dataset import TestDataset
 
-args = parser.parse_arguments()
-start_time = datetime.now()
-log_dir = Path("logs") / args.log_dir / start_time.strftime('%Y-%m-%d_%H-%M-%S')
+args = parser.parse_arguments("eval")
+if args.remove_timestamp:
+    log_dir = Path("logs") / args.log_dir
+else:
+    start_time = datetime.now()
+    log_dir = Path("logs") / args.log_dir / start_time.strftime('%Y-%m-%d_%H-%M-%S')
+args.output_dir = log_dir if not args.output_dir else Path(args.output_dir)
 commons.setup_logging(log_dir, stdout="info")
 logging.info(" ".join(sys.argv))
 logging.info(f"Arguments: {args}")
@@ -57,16 +62,27 @@ with torch.inference_mode():
 queries_descriptors = all_descriptors[test_ds.num_database:]
 database_descriptors = all_descriptors[:test_ds.num_database]
 
+# If selected, saves the descriptors
+if args.save_descriptors:
+    logging.info(f"Saving the descriptors of {test_ds} in {args.output_dir}")
+    save.save_descriptors(args, test_ds=test_ds, descriptors=all_descriptors)
+
 # Use a kNN to find predictions
 faiss_index = faiss.IndexFlatL2(args.descriptors_dimension)
 faiss_index.add(database_descriptors)
 del database_descriptors, all_descriptors
 
-logging.debug("Calculating recalls")
-_, predictions = faiss_index.search(queries_descriptors, max(args.recall_values))
+# If selected, creates pairsfile
+if args.num_candidates_in_pairsfile > 0:
+    distances, predictions = faiss_index.search(queries_descriptors, max(args.recall_values))
+    logging.info(f"Creating predictions_paths.txt with {args.num_candidates_in_pairsfile} candidates per query")
+    save.save_pairsfile(args, test_ds=test_ds, predictions=predictions, distances=distances)
+else:
+    _, predictions = faiss_index.search(queries_descriptors, max(args.recall_values))
 
 # For each query, check if the predictions are correct
 if args.use_labels:
+    logging.debug("Calculating recalls")
     positives_per_query = test_ds.get_positives()
     recalls = np.zeros(len(args.recall_values))
     for query_index, preds in enumerate(predictions):

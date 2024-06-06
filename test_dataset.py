@@ -60,11 +60,15 @@ class TestDataset(data.Dataset):
         """
         super().__init__()
         
+        self.database_folder = database_folder.rstrip('/')
+        self.queries_folder = queries_folder.rstrip('/')
+
         self.database_paths = read_images_paths(database_folder)
         self.queries_paths = read_images_paths(queries_folder)
         
         self.images_paths = list(self.database_paths) + list(self.queries_paths)
-        
+        self.rel_images_paths = None
+
         self.num_database = len(self.database_paths)
         self.num_queries = len(self.queries_paths)
         
@@ -113,3 +117,53 @@ class TestDataset(data.Dataset):
     def get_positives(self):
         return self.positives_per_query
 
+    def get_images_rel_paths(self):
+        if not self.rel_images_paths:
+            self.rel_images_paths = [x.split(self.database_folder + "/")[-1] for x in self.database_paths]
+            self.rel_images_paths.extend([x.split(self.queries_folder + "/")[-1] for x in self.queries_paths])
+        return self.rel_images_paths
+
+class ExtractDescriptorsDataset(data.Dataset):
+    def __init__(self, data_folder, image_size=None):
+        """Dataset with images from a single folder. Used for simple features extractions.
+        Parameters
+        ----------
+        data_folder : str, should contain the path to the folder
+            containing the images.
+        image_size : int or List, should contain the desired size of the images.
+        """
+        super().__init__()
+
+        self.data_folder = data_folder.rstrip("/")
+
+        self.data_paths = read_images_paths(data_folder)[:50]
+
+        self.images_paths = list(self.data_paths)
+        self.rel_images_paths = None
+
+        self.num_data = len(self.data_paths)
+        
+        transformations = [
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+        if image_size:
+            transformations.append(transforms.Resize(size=image_size, antialias=True))
+        self.transform = transforms.Compose(transformations)
+    
+    def __getitem__(self, index):
+        image_path = self.images_paths[index]
+        pil_img = Image.open(image_path).convert("RGB")
+        normalized_img = self.transform(pil_img)
+        return normalized_img, index
+    
+    def __len__(self):
+        return len(self.images_paths)
+    
+    def __repr__(self):
+        return f"< #images: {self.num_data} >"
+    
+    def get_images_rel_paths(self):
+        if not self.rel_images_paths:
+            self.rel_images_paths = [x.split(self.data_folder+"/")[-1] for x in self.images_paths]
+        return self.rel_images_paths

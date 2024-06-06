@@ -2,11 +2,10 @@
 import argparse
 
 
-def parse_arguments():
+def parse_arguments(mode):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("--positive_dist_threshold", type=int, default=25,
-                        help="distance (in meters) for a prediction to be considered a positive")
+    # Shared arguments between evaluation and extraction modes
     parser.add_argument("--method", type=str, default="cosplace",
                         choices=["netvlad", "apgem", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces", 
                                  "eigenplaces-indoor", "anyloc", "salad", "salad-indoor"],
@@ -18,32 +17,54 @@ def parse_arguments():
                         help="_")
     parser.add_argument("--database_folder", type=str, required=True,
                         help="path/to/database")
-    parser.add_argument("--queries_folder", type=str, required=True,
-                        help="path/to/queries")
     parser.add_argument("--num_workers", type=int, default=4,
+                        help="_")
+    parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"],
                         help="_")
     parser.add_argument("--batch_size", type=int, default=4,
                         help="set to 1 if database images may have different resolution")
     parser.add_argument("--log_dir", type=str, default="default",
                         help="experiment name, output logs will be saved under logs/log_dir")
-    parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"],
-                        help="_")
-    parser.add_argument("--recall_values", type=int, nargs="+", default=[1, 5, 10, 20],
-                        help="values for recall (e.g. recall@1, recall@5)")
-    parser.add_argument("--no_labels", action="store_true",
-                        help="set to true if you have no labels and just want to "
-                        "do standard image retrieval given two folders of queries and DB")
-    parser.add_argument("--num_preds_to_save", type=int, default=0,
-                        help="set != 0 if you want to save predictions for each query")
-    parser.add_argument("--save_only_wrong_preds", action="store_true",
-                        help="set to true if you want to save predictions only for "
-                        "wrongly predicted queries")
+    parser.add_argument("--remove_timestamp", action="store_true",
+                        help="remove the timestamp from the log directory. This may cause errors"
+                        "in consecutive executions with the same --log_dir.")
+    parser.add_argument("--output_dir", type=str, default=None,
+                        help="output directory for descriptors files and pairsfiles. Defaults to --log_dir.")
     parser.add_argument("--image_size", type=int, default=None, nargs="+",
                         help="Resizing shape for images (HxW). If a single int is passed, set the"
                         "smallest edge of all images to this value, while keeping aspect ratio")
+    parser.add_argument("--save_descriptors", type=str, default=None, choices=[None, "kapture", "pickle"],
+                        help="saves the descriptors of the images in a file. set to kapture to obtain"
+                        "the output in kapture format (see https://github.com/naver/kapture)"
+                        "select pickle to obtain a sigle pickled file"
+                        "in eval mode, descriptors are not saved by default"
+                        "in extract mode, the pickle format is selected by default")
+    if mode == "eval":
+        # These arguments are needed only when launching the main.py script e.g. when evaluating a model
+        parser.add_argument("--positive_dist_threshold", type=int, default=25,
+                            help="distance (in meters) for a prediction to be considered a positive")
+        parser.add_argument("--queries_folder", type=str, required=True,
+                            help="path/to/queries")
+        parser.add_argument("--recall_values", type=int, nargs="+", default=[1, 5, 10, 20],
+                            help="values for recall (e.g. recall@1, recall@5)")
+        parser.add_argument("--no_labels", action="store_true",
+                            help="set to true if you have no labels and just want to "
+                        "do standard image retrieval given two folders of queries and DB")
+        parser.add_argument("--num_preds_to_save", type=int, default=0,
+                            help="set != 0 if you want to save predictions for each query")
+        parser.add_argument("--save_only_wrong_preds", action="store_true",
+                            help="set to true if you want to save predictions only for "
+                        "wrongly predicted queries")
+        parser.add_argument("--num_candidates_in_pairsfile", type=int, default=0,
+                            help="set >0 to create a pairsfile with this number of candidates"
+                            "per query. each row will contain a query path, a candidate path and"
+                            "and the distance between them.")
+        parser.add_argument("--rel_paths_in_pairsfile", action="store_true",
+                            help="set to true to use relative paths in pairsfile")
+
     args = parser.parse_args()
     
-    args.use_labels = not args.no_labels
+    if mode == "eval": args.use_labels = not args.no_labels
     
     if args.method == "netvlad":
         if args.backbone not in [None, "VGG16"]:
