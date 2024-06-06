@@ -136,7 +136,7 @@ class ExtractDescriptorsDataset(data.Dataset):
 
         self.data_folder = data_folder.rstrip("/")
 
-        self.data_paths = read_images_paths(data_folder)[:50]
+        self.data_paths = read_images_paths(data_folder)
 
         self.images_paths = list(self.data_paths)
         self.rel_images_paths = None
