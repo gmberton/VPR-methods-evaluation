@@ -59,7 +59,9 @@ database_descriptors = all_descriptors[:test_ds.num_database]
 
 if args.save_descriptors:
     args.descriptors_output_dir = log_dir if not args.descriptors_output_dir else Path(args.descriptors_output_dir)
-    torch.save(all_descriptors, args.descriptors_output_dir / "descriptors.pt")
+    logging.info(f"Saving the descriptors in {args.descriptors_output_dir}")
+    np.save(args.descriptors_output_dir / "queries_descriptors.npy", queries_descriptors)
+    np.save(args.descriptors_output_dir / "database_descriptors.npy", database_descriptors)
 
 # Use a kNN to find predictions
 faiss_index = faiss.IndexFlatL2(args.descriptors_dimension)
