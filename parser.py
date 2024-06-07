@@ -9,7 +9,7 @@ def parse_arguments():
                         help="distance (in meters) for a prediction to be considered a positive")
     parser.add_argument("--method", type=str, default="cosplace",
                         choices=["netvlad", "apgem", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces", 
-                                 "eigenplaces-indoor", "anyloc", "salad", "salad-indoor"],
+                                 "eigenplaces-indoor", "anyloc", "salad", "salad-indoor", "cricavpr"],
                         help="_")
     parser.add_argument("--backbone", type=str, default=None,
                         choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152"],
@@ -126,6 +126,10 @@ def parse_arguments():
     elif args.method == "salad-indoor":
         args.backbone = "Dinov2"
         args.descriptors_dimension = 8448
+    
+    elif args.method == "cricavpr":
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 10752
     
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(f"The --image_size parameter can only take up to 2 values, but has received {len(args.image_size)}.")

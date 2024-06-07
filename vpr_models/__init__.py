@@ -1,9 +1,9 @@
 
 import torch
 
+from vpr_models.resizing_wrapper import ResizingWrapper
 from vpr_models import sfrs, apgem, convap, mixvpr, netvlad
 
-from vpr_models.resizing_wrapper import ResizingWrapper
 
 def get_model(method, backbone=None, descriptors_dimension=None):
     if method == "sfrs":
@@ -26,13 +26,18 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = torch.hub.load("Enrico-Chiavassa/Indoor-VPR", "get_trained_model",
                                backbone=backbone, fc_output_dim=descriptors_dimension)
     elif method == "anyloc":
-        # model = anyloc.AnyLocWrapper()
-        model = ResizingWrapper(torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", device="cuda"))
+        anyloc = torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", device="cuda")
+        model = ResizingWrapper(anyloc, resize_type="dino_v2_resize")
     elif method == "salad":
-        model = ResizingWrapper(torch.hub.load("serizba/salad", "dinov2_salad"))
+        salad = torch.hub.load("serizba/salad", "dinov2_salad")
+        model = ResizingWrapper(salad, resize_type="dino_v2_resize")
     elif method == "salad-indoor":
-        model = ResizingWrapper(torch.hub.load("Enrico-Chiavassa/Indoor-VPR", "get_trained_model",
-                                method="salad", backbone="Dinov2", fc_output_dim=8448))
+        salad_indoor = torch.hub.load("Enrico-Chiavassa/Indoor-VPR", "get_trained_model",
+                                      method="salad", backbone="Dinov2", fc_output_dim=8448)
+        model = ResizingWrapper(salad_indoor, resize_type="dino_v2_resize")
+    elif method == "cricavpr":
+        cricavpr = torch.hub.load("Lu-Feng/CricaVPR", "trained_model")
+        model = ResizingWrapper(cricavpr, resize_type=224)
     
     return model
 
