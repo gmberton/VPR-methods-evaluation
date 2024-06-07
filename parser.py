@@ -41,6 +41,8 @@ def parse_arguments():
     parser.add_argument("--image_size", type=int, default=None, nargs="+",
                         help="Resizing shape for images (HxW). If a single int is passed, set the"
                         "smallest edge of all images to this value, while keeping aspect ratio")
+    parser.add_argument("--save_descriptors", action="store_true",
+                        help="set to True if you want to save the descriptors extracted by the model")
     args = parser.parse_args()
     
     args.use_labels = not args.no_labels
