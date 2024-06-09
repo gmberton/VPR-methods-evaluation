@@ -2,7 +2,14 @@
 import torch
 
 from vpr_models.resizing_wrapper import ResizingWrapper
-from vpr_models import sfrs, apgem, convap, mixvpr, netvlad
+try:
+    from vpr_models import sfrs, apgem, convap, mixvpr, netvlad
+except ModuleNotFoundError:
+    raise ModuleNotFoundError(
+        "\n\nIf you're getting this error it's almost certainly because you ran "
+        "`git clone` without `--recursive`. You can either re-clone it or run "
+        "`git submodule update --init --recursive`\n"
+    )
 
 
 def get_model(method, backbone=None, descriptors_dimension=None):
@@ -40,4 +47,3 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = ResizingWrapper(cricavpr, resize_type=224)
     
     return model
-
