@@ -9,7 +9,8 @@ def parse_arguments():
                         help="distance (in meters) for a prediction to be considered a positive")
     parser.add_argument("--method", type=str, default="cosplace",
                         choices=["netvlad", "apgem", "sfrs", "cosplace", "convap", "mixvpr", "eigenplaces", 
-                                 "eigenplaces-indoor", "anyloc", "salad", "salad-indoor", "cricavpr"],
+                                 "eigenplaces-indoor", "anyloc", "salad", "salad-indoor", "cricavpr",
+                                 "clique-mining"],
                         help="_")
     parser.add_argument("--backbone", type=str, default=None,
                         choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152"],
@@ -120,6 +121,10 @@ def parse_arguments():
         args.descriptors_dimension = 49152
     
     elif args.method == "salad":
+        args.backbone = "DINOv2"
+        args.descriptors_dimension = 8448
+        
+    elif args.method == "clique-mining":
         args.backbone = "DINOv2"
         args.descriptors_dimension = 8448
         
