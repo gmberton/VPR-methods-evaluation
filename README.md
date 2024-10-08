@@ -37,7 +37,7 @@ The format needed by this repo to compute recalls is that each image should use 
 
 ```
 mkdir VPR-codebase
-cd vpr-codebase
+cd VPR-codebase
 
 git clone https://github.com/gmberton/VPR-datasets-downloader
 cd VPR-datasets-downloader
