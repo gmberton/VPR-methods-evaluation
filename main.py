@@ -22,8 +22,8 @@ def main(args):
     logger.remove()  # Remove possibly previously existing loggers
     log_dir = Path("logs") / args.log_dir / start_time.strftime('%Y-%m-%d_%H-%M-%S')
     logger.add(sys.stdout, colorize=True, format="<green>{time:%Y-%m-%d %H:%M:%S}</green> {message}", level="INFO")
+    logger.add(log_dir / "info.log", format="<green>{time:%Y-%m-%d %H:%M:%S}</green> {message}", level="INFO")
     logger.add(log_dir / "debug.log", level="DEBUG")
-    logger.add(log_dir / "info.log", level="INFO")
     logger.info(" ".join(sys.argv))
     logger.info(f"Arguments: {args}")
     logger.info(f"Testing with {args.method} with a {args.backbone} backbone and descriptors dimension {args.descriptors_dimension}")
