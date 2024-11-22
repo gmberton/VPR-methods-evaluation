@@ -1,5 +1,6 @@
 faiss_cpu
 gdown
+loguru
 numpy
 opencv_python
 Pillow
