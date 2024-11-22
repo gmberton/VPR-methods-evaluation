@@ -21,7 +21,7 @@ class NetVLADLayer(nn.Module):
         self.score_proj = nn.Conv1d(input_dim, num_clusters, kernel_size=1, bias=score_bias)
         centers = nn.parameter.Parameter(torch.empty([input_dim, num_clusters]))
         nn.init.xavier_uniform_(centers)
-        self.register_parameter('centers', centers)
+        self.register_parameter("centers", centers)
         self.intranorm = intranorm
         self.output_dim = input_dim * num_clusters
 
@@ -29,7 +29,7 @@ class NetVLADLayer(nn.Module):
         b = x.size(0)
         scores = self.score_proj(x)
         scores = F.softmax(scores, dim=1)
-        diff = (x.unsqueeze(2) - self.centers.unsqueeze(0).unsqueeze(-1))
+        diff = x.unsqueeze(2) - self.centers.unsqueeze(0).unsqueeze(-1)
         desc = (scores.unsqueeze(1) * diff).sum(dim=-1)
         if self.intranorm:
             # From the official MATLAB implementation.
@@ -45,25 +45,25 @@ class NetVLAD(torch.nn.Module):
         super().__init__()
         assert descriptors_dimension in [4096, 32768]
         whiten = descriptors_dimension == 4096
-        model_name = 'VGG16-NetVLAD-Pitts30K'
+        model_name = "VGG16-NetVLAD-Pitts30K"
         dir_models = {
-            'VGG16-NetVLAD-Pitts30K': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/Pitts30K_struct.mat',
-            'VGG16-NetVLAD-TokyoTM': 'https://cvg-data.inf.ethz.ch/hloc/netvlad/TokyoTM_struct.mat'
+            "VGG16-NetVLAD-Pitts30K": "https://cvg-data.inf.ethz.ch/hloc/netvlad/Pitts30K_struct.mat",
+            "VGG16-NetVLAD-TokyoTM": "https://cvg-data.inf.ethz.ch/hloc/netvlad/TokyoTM_struct.mat",
         }
 
         # Download the checkpoint.
-        checkpoint = Path(torch.hub.get_dir(), 'netvlad', model_name + '.mat')
+        checkpoint = Path(torch.hub.get_dir(), "netvlad", model_name + ".mat")
         if not checkpoint.exists():
             checkpoint.parent.mkdir(exist_ok=True, parents=True)
             link = dir_models[model_name]
-            cmd = ['wget', link, '-O', str(checkpoint)]
+            cmd = ["wget", link, "-O", str(checkpoint)]
             subprocess.run(cmd, check=True)
 
         # Create the network.
         # Remove classification head.
         backbone = list(models.vgg16().children())[0]
         # Remove last ReLU + MaxPool2d.
-        self.backbone = nn.Sequential(*list(backbone.children())[: -2])
+        self.backbone = nn.Sequential(*list(backbone.children())[:-2])
 
         self.netvlad = NetVLADLayer()
 
@@ -74,8 +74,7 @@ class NetVLAD(torch.nn.Module):
         mat = loadmat(checkpoint, struct_as_record=False, squeeze_me=True)
 
         # CNN weights.
-        for layer, mat_layer in zip(self.backbone.children(),
-                                    mat['net'].layers):
+        for layer, mat_layer in zip(self.backbone.children(), mat["net"].layers):
             if isinstance(layer, nn.Conv2d):
                 w = mat_layer.weights[0]  # Shape: S x S x IN x OUT
                 b = mat_layer.weights[1]  # Shape: OUT
@@ -89,9 +88,9 @@ class NetVLAD(torch.nn.Module):
                 layer.bias = nn.Parameter(b)
 
         # NetVLAD weights.
-        score_w = mat['net'].layers[30].weights[0]  # D x K
+        score_w = mat["net"].layers[30].weights[0]  # D x K
         # centers are stored as opposite in official MATLAB code
-        center_w = -mat['net'].layers[30].weights[1]  # D x K
+        center_w = -mat["net"].layers[30].weights[1]  # D x K
         # Prepare for PyTorch - make sure it is float32 and has right shape.
         # score_w should have shape K x D x 1
         # center_w should have shape D x K
@@ -103,8 +102,8 @@ class NetVLAD(torch.nn.Module):
 
         # Whitening weights.
         if whiten:
-            w = mat['net'].layers[33].weights[0]  # Shape: 1 x 1 x IN x OUT
-            b = mat['net'].layers[33].weights[1]  # Shape: OUT
+            w = mat["net"].layers[33].weights[0]  # Shape: 1 x 1 x IN x OUT
+            b = mat["net"].layers[33].weights[1]  # Shape: OUT
             # Prepare for PyTorch - make sure it is float32 and has right shape
             w = torch.tensor(w).float().squeeze().permute([1, 0])  # OUT x IN
             b = torch.tensor(b.squeeze()).float()  # Shape: OUT
@@ -114,8 +113,8 @@ class NetVLAD(torch.nn.Module):
 
         # Preprocessing parameters.
         self.preprocess = {
-            'mean': mat['net'].meta.normalization.averageImage[0, 0],
-            'std': np.array([1, 1, 1], dtype=np.float32)
+            "mean": mat["net"].meta.normalization.averageImage[0, 0],
+            "std": np.array([1, 1, 1], dtype=np.float32),
         }
 
     def forward(self, images):
@@ -124,8 +123,8 @@ class NetVLAD(torch.nn.Module):
         assert images.shape[1] == 3
         assert images.min() >= -EPS and images.max() <= 1 + EPS
         images = torch.clamp(images * 255, 0.0, 255.0)  # Input should be 0-255.
-        mean = self.preprocess['mean']
-        std = self.preprocess['std']
+        mean = self.preprocess["mean"]
+        std = self.preprocess["std"]
         images = images - images.new_tensor(mean).view(1, -1, 1, 1)
         images = images / images.new_tensor(std).view(1, -1, 1, 1)
 
@@ -139,9 +138,8 @@ class NetVLAD(torch.nn.Module):
         descriptors = self.netvlad(descriptors)
 
         # Whiten if needed.
-        if hasattr(self, 'whiten'):
+        if hasattr(self, "whiten"):
             descriptors = self.whiten(descriptors)
             descriptors = F.normalize(descriptors, dim=1)  # Final L2 normalization.
 
         return descriptors
-

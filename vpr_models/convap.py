@@ -14,7 +14,7 @@ MODELS_INFO = {
     512: "resnet50_ConvAP_128_2x2.ckpt",
     2048: "resnet50_ConvAP_512_2x2.ckpt",
     4096: "resnet50_ConvAP_1024_2x2.ckpt",
-    8192: "resnet50_ConvAP_2048_2x2.ckpt"
+    8192: "resnet50_ConvAP_2048_2x2.ckpt",
 }
 URL = "https://drive.google.com/drive/folders/1VYPw9uGD11NgiGFgfWueLt3noJYOIuhL"
 
@@ -42,15 +42,16 @@ class ConvAP(nn.Module):
 
 
 class MixVPR(nn.Module):
-    def __init__(self,
-                 in_channels=1024,
-                 in_h=20,
-                 in_w=20,
-                 out_channels=512,
-                 mix_depth=1,
-                 mlp_ratio=1,
-                 out_rows=4,
-                 ) -> None:
+    def __init__(
+        self,
+        in_channels=1024,
+        in_h=20,
+        in_w=20,
+        out_channels=512,
+        mix_depth=1,
+        mlp_ratio=1,
+        out_rows=4,
+    ) -> None:
         super().__init__()
 
         self.in_h = in_h  # height of input feature maps
@@ -64,10 +65,7 @@ class MixVPR(nn.Module):
         self.mlp_ratio = mlp_ratio  # ratio of the mid projection layer in the mixer block
 
         hw = in_h * in_w
-        self.mix = nn.Sequential(*[
-            ConvAP(in_dim=hw, mlp_ratio=mlp_ratio)
-            for _ in range(self.mix_depth)
-        ])
+        self.mix = nn.Sequential(*[ConvAP(in_dim=hw, mlp_ratio=mlp_ratio) for _ in range(self.mix_depth)])
         self.channel_proj = nn.Linear(in_channels, out_channels)
         self.row_proj = nn.Linear(hw, out_rows)
 
@@ -125,11 +123,10 @@ def get_convap(descriptors_dimension):
         os.makedirs("trained_models/convap", exist_ok=True)
         gdown.download_folder(URL, output="trained_models/convap", use_cookies=False)
 
-    model_config = {'in_channels': 2048, 'out_channels': descriptors_dimension // 4, 's1': 2, 's2': 2}
+    model_config = {"in_channels": 2048, "out_channels": descriptors_dimension // 4, "s1": 2, "s2": 2}
     model = ConvAPModel(agg_config=model_config)
     state_dict = torch.load(file_path)
     model.load_state_dict(state_dict)
     model = model.eval()
 
     return model
-

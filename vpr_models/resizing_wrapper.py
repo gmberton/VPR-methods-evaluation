@@ -1,4 +1,3 @@
-
 import torch
 import torchvision.transforms as transforms
 
@@ -6,12 +5,13 @@ import torchvision.transforms as transforms
 class ResizingWrapper(torch.nn.Module):
     """Wrapper to be used for any model that doesn't accept images of arbitrary
     resolution, like SALAD, CricaVPR, AnyLoc"""
+
     def __init__(self, model, resize_type="dino_v2_resize"):
         """All these models rely on DINO-v2 which needs height, width to be multiple of 14"""
         super().__init__()
         self.model = model
         self.resize_type = resize_type
-    
+
     def forward(self, images):
         if self.resize_type == "dino_v2_resize":
             b, c, h, w = images.shape
