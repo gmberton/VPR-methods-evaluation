@@ -35,14 +35,9 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = torch.hub.load(
             "Enrico-Chiavassa/Indoor-VPR", "get_trained_model", backbone=backbone, fc_output_dim=descriptors_dimension
         )
-    elif method == "anyloc-urban":
-        anyloc = torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", domain="urban", device="cuda")
-        model = ResizingWrapper(anyloc, resize_type="dino_v2_resize")
-    elif method == "anyloc-indoor":
-        anyloc = torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", domain="indoor", device="cuda")
-        model = ResizingWrapper(anyloc, resize_type="dino_v2_resize")
-    elif method == "anyloc-aerial":
-        anyloc = torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", domain="aerial", device="cuda")
+    elif method.startswith("anyloc"):
+        domain = method.split("-")[1]
+        anyloc = torch.hub.load("AnyLoc/DINO", "get_vlad_model", backbone="DINOv2", domain=domain, device="cuda")
         model = ResizingWrapper(anyloc, resize_type="dino_v2_resize")
     elif method == "salad":
         salad = torch.hub.load("serizba/salad", "dinov2_salad")
