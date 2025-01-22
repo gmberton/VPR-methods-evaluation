@@ -1,16 +1,11 @@
 
 # VPR-methods-evaluation
+This repo allows you to easily test almost any SOTA VPR model within a minute.
+The architecture code and weights are from the respective authors of the papers, ensuring reliability.
 
-This repo is used to easily evaluate pre-trained Visual Place Recognition methods, and is released as part of the [ICCV 2023 EigenPlaces paper](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html).
-All train state-of-the-art models since 2016 are supported (namely NetVLAD, AP-GeM, SFRS, Conv-AP, CosPlace, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor and SALAD-indoor) and it uses the weights released by the respective authors.
+## Basic use on an unlabelled dataset
 
-To see the results of these methods on a large number (14!) of VPR datasets check out the EigenPlaces paper.
-
-[[ICCV 2023 Open Access](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html)] [[ArXiv](https://arxiv.org/abs/2308.10832)] [[Cite/BibTex](https://github.com/gmberton/EigenPlaces#cite)]
-
-## Basic use
-
-Simply run this to try a method on a (unlabeled) toy dataset contained in assets. This is super lightweight and will take a few seconds even running on a CPU of a laptop.
+Simply run this to try a method on a (unlabelled) toy dataset contained in assets. This is super lightweight and will take a few seconds even running on a CPU of a laptop.
 
 ```
 git clone --recursive https://github.com/gmberton/VPR-methods-evaluation
@@ -29,7 +24,7 @@ which will generate images like this within the `logs/toy_experiment` visual pre
 
 You can also use this on your own dataset (or any two directories) simply changing the paths parameters.
 
-## How to use on a labelled dataset
+## Basic use on a labelled dataset
 
 The code is designed to be readily used with our [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader) repo, so that using a few simple commands you can download a dataset and test any model on it. The VPR-datasets-downloader code allows you to download multiple VPR datasets that are automatically formatted in the same format as used by this repo.
 
@@ -53,7 +48,7 @@ python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=51
 ```
 This should produce this as output `R@1: 98.8, R@5: 99.7, R@10: 99.9, R@20: 100.0`, which will be saved in a log file under `./logs/`
 
-You can easily change the paths for different datasets, and you can use any of the following methods: NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor and SALAD-indoor.
+You can easily change the paths for different datasets, and you can use any supported method.
 Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4069 (with PCA).
 
 NB: make sure to use the `git clone --recursive`, otherwise some third party (like AP-GeM) models can't be used.
@@ -77,10 +72,18 @@ will generate under the path `./logs/cosplace_on_stlucia/*/preds` images such as
 
 Given that saving predictions for each query might take long, you can also pass the parameter `--save_only_wrong_preds` which will save only predictions for wrongly predicted queries (i.e. where the first prediction is wrong).
 
+## Supported models
+NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining.
+
+### Unsupported models / contributing
+There are some models that we tried to add but couldn't get to work, mostly due to issues in their codebases, namely VLAD-BuFF, Bag-of-Queries, DINO-Mix.
+We'd gladly accept PRs from anyone who can get them to work.
+
+To get a model to work simply add it to `parser.py` and add it to `vpr_models/__init__.py`: if the model is easy to download (e.g. through `torch.hub.load`), adding a few (4-5) lines of code should be enough to make it work. There is no need to test it on a VPR dataset, just make it run on the toy dataset and then we'll test it on the VPR datasets ourselves to ensure correctness.
 
 ## Acknowledgements / Cite / BibTex
 
-If you use this repository please cite our paper
+If you use this repository please cite our [ICCV 2023 EigenPlaces paper](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html), for which we started this repo to ensure fair comparisons between VPR models:
 ```
 @inproceedings{Berton_2023_EigenPlaces,
   title={EigenPlaces: Training Viewpoint Robust Models for Visual Place Recognition},
