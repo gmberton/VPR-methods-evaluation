@@ -53,5 +53,7 @@ def get_model(method, backbone=None, descriptors_dimension=None):
     elif method == "cricavpr":
         cricavpr = torch.hub.load("Lu-Feng/CricaVPR", "trained_model")
         model = ResizingWrapper(cricavpr, resize_type=224)
+    elif method == "megaloc":
+        model = torch.hub.load("gmberton/MegaLoc", "get_trained_model")
 
     return model

@@ -33,6 +33,7 @@ def parse_arguments():
             "salad-indoor",
             "cricavpr",
             "clique-mining",
+            "megaloc",
         ],
         help="_",
     )
@@ -200,6 +201,10 @@ def parse_arguments():
     elif args.method == "cricavpr":
         args.backbone = "Dinov2"
         args.descriptors_dimension = 10752
+
+    elif args.method == "megaloc":
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 8448
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(
