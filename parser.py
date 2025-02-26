@@ -13,7 +13,7 @@ def parse_arguments():
     parser.add_argument(
         "--method",
         type=str,
-        default="cosplace",
+        default="megaloc",
         choices=[
             "netvlad",
             "apgem",
