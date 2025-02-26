@@ -1,8 +1,9 @@
 # Model from "NetVLAD: CNN architecture for weakly supervised place recognition" - https://arxiv.org/abs/1511.07247
 # Parts of this code are from https://github.com/cvg/Hierarchical-Localization
 
-from pathlib import Path
 import subprocess
+from pathlib import Path
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -40,7 +41,6 @@ class NetVLADLayer(nn.Module):
 
 
 class NetVLAD(torch.nn.Module):
-
     def __init__(self, descriptors_dimension):
         super().__init__()
         assert descriptors_dimension in [4096, 32768]

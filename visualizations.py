@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
-from tqdm import tqdm
-from skimage.transform import rescale
 from PIL import Image, ImageDraw, ImageFont
-
+from skimage.transform import rescale
+from tqdm import tqdm
 
 # Height and width of a single image
 H = 512

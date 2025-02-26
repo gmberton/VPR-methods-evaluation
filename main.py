@@ -1,17 +1,18 @@
+import parser
 import sys
-import faiss
-import torch
-import numpy as np
-from tqdm import tqdm
-from pathlib import Path
-from loguru import logger
 from datetime import datetime
+from pathlib import Path
+
+import faiss
+import numpy as np
+import torch
+from loguru import logger
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
+from tqdm import tqdm
 
-import vpr_models
-import parser
 import visualizations
+import vpr_models
 from test_dataset import TestDataset
 
 

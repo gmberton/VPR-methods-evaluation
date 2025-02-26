@@ -3,18 +3,19 @@
 
 import os
 import sys
-import gdown
-import torch
-import einops
-import sklearn
 from pathlib import Path
 from zipfile import ZipFile
+
+import einops
+import gdown
+import sklearn
+import torch
 
 sys.path.append(str(Path("third_party/deep-image-retrieval")))
 os.environ["DB_ROOT"] = ""  # required by dirtorch
 
-from dirtorch.utils import common  # noqa: E402
 from dirtorch.extract_features import load_model  # noqa: E402
+from dirtorch.utils import common  # noqa: E402
 
 # The DIR model checkpoints (pickle files) include sklearn.decomposition.pca,
 # which has been deprecated in sklearn v0.24

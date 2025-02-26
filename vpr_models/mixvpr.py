@@ -2,13 +2,13 @@
 # Parts of this code are from https://github.com/amaralibey/MixVPR
 
 import os
+
 import gdown
 import torch
-import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 import torchvision.transforms as transforms
-
 
 MODELS_INFO = {
     128: (

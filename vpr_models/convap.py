@@ -2,13 +2,13 @@
 # Parts of this code are from https://github.com/amaralibey/gsv-cities
 
 import os
+
 import gdown
 import torch
-import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 import torchvision.transforms as transforms
-
 
 MODELS_INFO = {
     512: "resnet50_ConvAP_128_2x2.ckpt",

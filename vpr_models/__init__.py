@@ -3,7 +3,7 @@ import torch
 from vpr_models.resizing_wrapper import ResizingWrapper
 
 try:
-    from vpr_models import sfrs, apgem, convap, mixvpr, netvlad, clique_mining
+    from vpr_models import apgem, clique_mining, convap, mixvpr, netvlad, sfrs
 except ModuleNotFoundError:
     raise ModuleNotFoundError(
         "\n\nIf you're getting this error it's almost certainly because you ran "
