@@ -73,7 +73,7 @@ will generate under the path `./logs/cosplace_on_stlucia/*/preds` images such as
 Given that saving predictions for each query might take long, you can also pass the parameter `--save_only_wrong_preds` which will save only predictions for wrongly predicted queries (i.e. where the first prediction is wrong).
 
 ## Supported models
-NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining.
+NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining, MegaLoc.
 
 ### Unsupported models / contributing
 There are some models that we tried to add but couldn't get to work, mostly due to issues in their codebases, namely VLAD-BuFF, Bag-of-Queries, DINO-Mix.
@@ -95,5 +95,5 @@ If you use this repository please cite our [ICCV 2023 EigenPlaces paper](https:/
 }
 ```
 
-Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [AP-GeM](https://github.com/naver/deep-image-retrieval), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc), [SALAD](https://github.com/serizba/salad), [EigenPlaces-indoor and SALAD-indoor](https://github.com/Enrico-Chiavassa/Indoor-VPR) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, except for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
+Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [AP-GeM](https://github.com/naver/deep-image-retrieval), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc), [SALAD](https://github.com/serizba/salad), [EigenPlaces-indoor and SALAD-indoor](https://github.com/Enrico-Chiavassa/Indoor-VPR), [MegaLoc]([https://arxiv.org/abs/2502.17237](https://github.com/gmberton/MegaLoc)) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, except for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
 Make sure to cite them if you use each model's code.
