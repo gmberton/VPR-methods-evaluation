@@ -76,10 +76,9 @@ Given that saving predictions for each query might take long, you can also pass 
 NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining, MegaLoc.
 
 ### Unsupported models / contributing
-There are some models that we tried to add but couldn't get to work, mostly due to issues in their codebases, namely VLAD-BuFF, Bag-of-Queries, DINO-Mix.
-We'd gladly accept PRs from anyone who can get them to work.
+We'd gladly accept PRs from anyone who can VPR models to work in this repo.
 
-To get a model to work simply add it to `parser.py` and add it to `vpr_models/__init__.py`: if the model is easy to download (e.g. through `torch.hub.load`), adding a few (4-5) lines of code should be enough to make it work. There is no need to test it on a VPR dataset, just make it run on the toy dataset and then we'll test it on the VPR datasets ourselves to ensure correctness.
+To get a model to work simply add it to `parser.py` and add it to `vpr_models/__init__.py`: if the model is easy to download (e.g. through `torch.hub.load`), adding a few (4-5) lines of code in total should be enough to make it work. There is no need to test it on a VPR dataset, just make it run on the toy dataset and then we'll test it on the VPR datasets ourselves to ensure correctness.
 
 ## Acknowledgements / Cite / BibTex
 
