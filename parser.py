@@ -34,6 +34,7 @@ def parse_arguments():
             "cricavpr",
             "clique-mining",
             "megaloc",
+            "boq"
         ],
         help="_",
     )
@@ -41,7 +42,7 @@ def parse_arguments():
         "--backbone",
         type=str,
         default=None,
-        choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152"],
+        choices=[None, "VGG16", "ResNet18", "ResNet50", "ResNet101", "ResNet152", "Dinov2"],
         help="_",
     )
     parser.add_argument("--descriptors_dimension", type=int, default=None, help="_")
@@ -205,6 +206,17 @@ def parse_arguments():
     elif args.method == "megaloc":
         args.backbone = "Dinov2"
         args.descriptors_dimension = 8448
+
+    elif args.method == "boq":
+        if args.backbone not in ["ResNet50", "Dinov2"]:
+            raise ValueError(f"When using BoQ the backbone must be ResNet50 or Dinov2")
+        if args.backbone in [None, "ResNet50"]:
+            args.backbone = "ResNet50"
+            args.descriptors_dimension = 16384
+            args.image_size = [384, 384]
+        if args.backbone == "Dinov2":
+            args.descriptors_dimension = 12288
+            args.image_size = [322, 322]
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(

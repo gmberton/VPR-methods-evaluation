@@ -3,7 +3,7 @@ import torch
 from vpr_models.resizing_wrapper import ResizingWrapper
 
 try:
-    from vpr_models import apgem, clique_mining, convap, mixvpr, netvlad, sfrs
+    from vpr_models import apgem, clique_mining, convap, mixvpr, netvlad, sfrs, boq
 except ModuleNotFoundError:
     raise ModuleNotFoundError(
         "\n\nIf you're getting this error it's almost certainly because you ran "
@@ -55,5 +55,8 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = ResizingWrapper(cricavpr, resize_type=224)
     elif method == "megaloc":
         model = torch.hub.load("gmberton/MegaLoc", "get_trained_model")
+
+    elif method == "boq":
+        model = boq.get_boq(backbone=backbone, descriptors_dimension=descriptors_dimension)
 
     return model
