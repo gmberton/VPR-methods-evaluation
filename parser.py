@@ -34,7 +34,8 @@ def parse_arguments():
             "cricavpr",
             "clique-mining",
             "megaloc",
-            "boq"
+            "boq",
+            "dinomix"
         ],
         help="_",
     )
@@ -217,6 +218,11 @@ def parse_arguments():
         if args.backbone == "Dinov2":
             args.descriptors_dimension = 12288
             args.image_size = [322, 322]
+
+    elif args.method == "dinomix":
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 4096
+        args.image_size = [224, 224]
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(
