@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile
 
-import einops
 import gdown
 import sklearn
 import torch
@@ -75,7 +74,9 @@ class GeM(torch.nn.Module):
                 pca = self.net.pca[self.conf["whiten_name"]]
                 desc = common.whiten_features(desc.cpu().numpy(), pca, **self.conf["whiten_params"])
                 desc = torch.from_numpy(desc)
+                assert len(desc) == 1
+                desc = desc[0]
                 whitened_descs.append(desc)
-            descs = einops.rearrange(whitened_descs, "b one d -> (b one) d")
+            descs = torch.stack(whitened_descs)
 
         return descs
