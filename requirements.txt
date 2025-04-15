@@ -2,9 +2,7 @@ faiss_cpu
 gdown
 loguru
 numpy
-opencv_python
 Pillow
-scikit_image
 scikit_learn
 scipy
 torch

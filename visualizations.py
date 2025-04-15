@@ -1,12 +1,12 @@
-import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from skimage.transform import rescale
 from tqdm import tqdm
+import torch
+from PIL import Image, ImageOps
+import torchvision.transforms as tfm
 
-# Height and width of a single image
-H = 512
-W = 512
+# Height and width of a single image for visualization
+IMG_HW = 512
 TEXT_H = 175
 FONTSIZE = 50
 SPACE = 50  # Space between two images
@@ -15,20 +15,25 @@ SPACE = 50  # Space between two images
 def write_labels_to_image(labels=["text1", "text2"]):
     """Creates an image with text"""
     font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", FONTSIZE)
-    img = Image.new("RGB", ((W * len(labels)) + 50 * (len(labels) - 1), TEXT_H), (1, 1, 1))
+    img = Image.new("RGB", ((IMG_HW * len(labels)) + 50 * (len(labels) - 1), TEXT_H), (1, 1, 1))
     d = ImageDraw.Draw(img)
     for i, text in enumerate(labels):
         _, _, w, h = d.textbbox((0, 0), text, font=font)
-        d.text(((W + SPACE) * i + W // 2 - w // 2, 1), text, fill=(0, 0, 0), font=font)
-    return np.array(img)[:100]  # Remove some empty space
+        d.text(((IMG_HW + SPACE) * i + IMG_HW // 2 - w // 2, 1), text, fill=(0, 0, 0), font=font)
+    return Image.fromarray(np.array(img)[:100] * 255)  # Remove some empty space
 
 
-def draw(img, c=(0, 255, 0), thickness=20):
-    """Draw a colored (usually red or green) box around an image."""
-    p = np.array([[0, 0], [0, img.shape[0]], [img.shape[1], img.shape[0]], [img.shape[1], 0]])
-    for i in range(3):
-        cv2.line(img, (p[i, 0], p[i, 1]), (p[i + 1, 0], p[i + 1, 1]), c, thickness=thickness * 2)
-    return cv2.line(img, (p[3, 0], p[3, 1]), (p[0, 0], p[0, 1]), c, thickness=thickness * 2)
+def draw_box(img, c=(0, 1, 0), thickness=20):
+    """Draw a colored box around an image. Image should be a PIL.Image."""
+    assert isinstance(img, Image.Image)
+    img = tfm.ToTensor()(img)
+    assert len(img.shape) >= 2, f"{img.shape=}"
+    c = torch.tensor(c).type(torch.float).reshape(3, 1, 1)
+    img[..., :thickness, :] = c
+    img[..., -thickness:, :] = c
+    img[..., :, -thickness:] = c
+    img[..., :, :thickness] = c
+    return tfm.ToPILImage()(img)
 
 
 def build_prediction_image(images_paths, preds_correct):
@@ -43,28 +48,31 @@ def build_prediction_image(images_paths, preds_correct):
         else:
             labels.append(f"Pred{i} - {is_correct}")
 
-    num_images = len(images_paths)
-    images = [np.array(Image.open(path).convert("RGB")) for path in images_paths]
-    for img, correct in zip(images, preds_correct):
-        if correct is None:
+    images = [Image.open(path).convert("RGB") for path in images_paths]
+    for img_idx, (img, is_correct) in enumerate(zip(images, preds_correct)):
+        if is_correct is None:
             continue
-        color = (0, 255, 0) if correct else (255, 0, 0)
-        draw(img, color)
-    concat_image = np.ones([H, (num_images * W) + ((num_images - 1) * SPACE), 3])
-    rescaleds = [
-        rescale(i, [min(H / i.shape[0], W / i.shape[1]), min(H / i.shape[0], W / i.shape[1]), 1]) for i in images
-    ]
-    for i, image in enumerate(rescaleds):
-        pad_width = (W - image.shape[1] + 1) // 2
-        pad_height = (H - image.shape[0] + 1) // 2
-        image = np.pad(image, [[pad_height, pad_height], [pad_width, pad_width], [0, 0]], constant_values=1)[:H, :W]
-        concat_image[:, i * (W + SPACE) : i * (W + SPACE) + W] = image
+        color = (0, 1, 0) if is_correct else (1, 0, 0)
+        img = draw_box(img, color)
+        images[img_idx] = img
+
+    resized_images = [tfm.Resize(510, max_size=IMG_HW, antialias=True)(img) for img in images]
+    resized_images = [ImageOps.pad(img, (IMG_HW, IMG_HW), color='white') for img in images]  # Apply padding to make them squared
+
+    total_h = len(resized_images)*IMG_HW + max(0,len(resized_images)-1)*SPACE # 2
+    concat_image = Image.new('RGB', (total_h, IMG_HW), (255, 255, 255))
+    y=0
+    for img in resized_images:
+        concat_image.paste(img, (y, 0))
+        y += IMG_HW + SPACE
+
     try:
         labels_image = write_labels_to_image(labels)
-        final_image = np.concatenate([labels_image, concat_image])
+        # Transform the images to np arrays for concatenation
+        final_image = Image.fromarray(np.concatenate((np.array(labels_image), np.array(concat_image)), axis=0))
     except OSError:  # Handle error in case of missing PIL ImageFont
         final_image = concat_image
-    final_image = Image.fromarray((final_image * 255).astype(np.uint8))
+
     return final_image
 
 
