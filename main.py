@@ -3,9 +3,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-import faiss
 import numpy as np
 import torch
+import faiss
 from loguru import logger
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
