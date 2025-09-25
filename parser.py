@@ -239,7 +239,7 @@ def parse_arguments():
 
         args.backbone = "dino"
         args.descriptors_dimension = 3072
-        args.image_size = [518, 518]
+        args.image_size = [224, 224]
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(
