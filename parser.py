@@ -35,7 +35,10 @@ def parse_arguments():
             "clique-mining",
             "megaloc",
             "boq",
-            "dinomix"
+            "dinomix",
+            "selavpr-pitts30k",
+            "selavpr-msls",
+            "supervlad"
         ],
         help="_",
     )
@@ -91,6 +94,7 @@ def parse_arguments():
         action="store_true",
         help="set to True if you want to save the descriptors extracted by the model",
     )
+
     args = parser.parse_args()
 
     args.use_labels = not args.no_labels
@@ -223,6 +227,19 @@ def parse_arguments():
         args.backbone = "Dinov2"
         args.descriptors_dimension = 4096
         args.image_size = [224, 224]
+
+    elif args.method.startswith("selavpr"):
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 1024
+        args.image_size = [224, 224]
+
+    elif args.method == "supervlad":
+        if args.backbone not in ['Dinov2']:
+            raise ValueError(f"When using SuperVLAD the backbone must be Dinov2")
+
+        args.backbone = "dino"
+        args.descriptors_dimension = 3072
+        args.image_size = [518, 518]
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(

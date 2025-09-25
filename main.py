@@ -51,7 +51,10 @@ def main(args):
         )
         all_descriptors = np.empty((len(test_ds), args.descriptors_dimension), dtype="float32")
         for images, indices in tqdm(database_dataloader):
-            descriptors = model(images.to(args.device))
+            if args.method.startswith("selavpr"):
+                descriptors = model(images.to(args.device))[1]
+            else:
+                descriptors = model(images.to(args.device))
             descriptors = descriptors.cpu().numpy()
             all_descriptors[indices.numpy(), :] = descriptors
 
@@ -61,7 +64,10 @@ def main(args):
         )
         queries_dataloader = DataLoader(dataset=queries_subset_ds, num_workers=args.num_workers, batch_size=1)
         for images, indices in tqdm(queries_dataloader):
-            descriptors = model(images.to(args.device))
+            if args.method.startswith("selavpr"):
+                descriptors = model(images.to(args.device))[1]
+            else:
+                descriptors = model(images.to(args.device))
             descriptors = descriptors.cpu().numpy()
             all_descriptors[indices.numpy(), :] = descriptors
 
