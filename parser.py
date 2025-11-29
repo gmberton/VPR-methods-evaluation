@@ -35,7 +35,8 @@ def parse_arguments():
             "clique-mining",
             "megaloc",
             "boq",
-            "dinomix"
+            "dinomix",
+            "edtformer",
         ],
         help="_",
     )
@@ -223,6 +224,11 @@ def parse_arguments():
         args.backbone = "Dinov2"
         args.descriptors_dimension = 4096
         args.image_size = [224, 224]
+
+
+    elif args.method == "edtformer":
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 4096
 
     if args.image_size and len(args.image_size) > 2:
         raise ValueError(
