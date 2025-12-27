@@ -235,4 +235,7 @@ def parse_arguments():
             f"The --image_size parameter can only take up to 2 values, but has received {len(args.image_size)}."
         )
 
+    if max(args.recall_values) < args.num_preds_to_save:
+        args.recall_values.append(args.num_preds_to_save)
+
     return args
