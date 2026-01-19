@@ -87,7 +87,7 @@ def main(args):
         recalls = np.zeros(len(args.recall_values))
         for query_index, preds in enumerate(predictions):
             for i, n in enumerate(args.recall_values):
-                if np.any(np.in1d(preds[:n], positives_per_query[query_index])):
+                if np.any(np.isin(preds[:n], positives_per_query[query_index])):
                     recalls[i:] += 1
                     break
 
