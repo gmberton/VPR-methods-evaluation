@@ -37,6 +37,8 @@ def parse_arguments():
             "boq",
             "dinomix",
             "edtformer",
+            "supervlad",
+            "supervlad-crossim"
         ],
         help="_",
     )
