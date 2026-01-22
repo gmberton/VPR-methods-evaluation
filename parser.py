@@ -37,6 +37,8 @@ def parse_arguments():
             "boq",
             "dinomix",
             "edtformer",
+            "supervlad",
+            "supervlad-crossim"
         ],
         help="_",
     )
@@ -225,6 +227,10 @@ def parse_arguments():
         args.descriptors_dimension = 4096
         args.image_size = [224, 224]
 
+    elif args.method in ["supervlad", "supervlad-crossim"]:
+        args.backbone = "Dinov2"
+        args.descriptors_dimension = 3072
+        args.image_size = [322, 322]
 
     elif args.method == "edtformer":
         args.backbone = "Dinov2"
