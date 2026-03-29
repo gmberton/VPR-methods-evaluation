@@ -3,7 +3,7 @@ import torch
 from vpr_models.resizing_wrapper import ResizingWrapper
 
 try:
-    from vpr_models import apgem, clique_mining, convap, mixvpr, netvlad, sfrs, boq, dinomix, supervlad
+    from vpr_models import apgem, clique_mining, convap, mixvpr, netvlad, sfrs, boq, dinomix, supervlad, qaa
 except ModuleNotFoundError:
     raise ModuleNotFoundError(
         "\n\nIf you're getting this error it's almost certainly because you ran "
@@ -65,6 +65,10 @@ def get_model(method, backbone=None, descriptors_dimension=None):
     elif method == "edtformer":
         model = torch.hub.load('Tong-Jin01/EDTformer', 'EDTformer')
         model = ResizingWrapper(model, resize_type="dino_v2_resize")
+
+    elif method == "qaa":
+        qaa_model = qaa.get_qaa(descriptors_dimension=descriptors_dimension)
+        model = ResizingWrapper(qaa_model, resize_type="dino_v2_resize")
 
     elif method == "supervlad":
         model = supervlad.get_supervlad("SuperVLAD")
