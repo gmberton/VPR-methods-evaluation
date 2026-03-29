@@ -1,5 +1,7 @@
 faiss_cpu
 gdown
+huggingface_hub
+safetensors
 loguru
 numpy
 Pillow

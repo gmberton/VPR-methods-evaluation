@@ -38,7 +38,8 @@ def parse_arguments():
             "dinomix",
             "edtformer",
             "supervlad",
-            "supervlad-crossim"
+            "supervlad-crossim",
+            "qaa"
         ],
         help="_",
     )
@@ -230,6 +231,16 @@ def parse_arguments():
     elif args.method in ["supervlad", "supervlad-crossim"]:
         args.backbone = "Dinov2"
         args.descriptors_dimension = 3072
+        args.image_size = [322, 322]
+
+    elif args.method == "qaa":
+        args.backbone = "Dinov2"
+        if args.descriptors_dimension is None:
+            args.descriptors_dimension = 8192
+        if args.descriptors_dimension not in [1024, 2048, 4096, 8192]:
+            raise ValueError(
+                "When using QAA the descriptors_dimension must be one of [1024, 2048, 4096, 8192]"
+            )
         args.image_size = [322, 322]
 
     elif args.method == "edtformer":
