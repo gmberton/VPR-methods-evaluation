@@ -16,7 +16,7 @@ python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=51
     --log_dir toy_experiment
 ```
 
-which will generate images like this within the `logs/toy_experiment` visual predictions for each query like this one
+which will generate visual predictions for each query under `logs/toy_experiment`, like this one
 
 <p float="left">
   <img src="https://raw.githubusercontent.com/gmberton/VPR-methods-evaluation/master/images/no_labels_pred.jpg"  height="200"/>
@@ -49,7 +49,7 @@ python3 main.py --method=cosplace --backbone=ResNet18 --descriptors_dimension=51
 This should produce this as output `R@1: 98.8, R@5: 99.7, R@10: 99.9, R@20: 100.0`, which will be saved in a log file under `./logs/`
 
 You can easily change the paths for different datasets, and you can use any supported method.
-Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4069 (with PCA).
+Note that each method has weights only for certain architectures. For example NetVLAD only has weights for VGG16 with descriptors_dimension 32768 and 4096 (with PCA).
 
 NB: make sure to use the `git clone --recursive`, otherwise some third party (like AP-GeM) models can't be used.
 
@@ -73,10 +73,10 @@ will generate under the path `./logs/cosplace_on_stlucia/*/preds` images such as
 Given that saving predictions for each query might take long, you can also pass the parameter `--save_only_wrong_preds` which will save only predictions for wrongly predicted queries (i.e. where the first prediction is wrong).
 
 ## Supported models
-NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining, SuperVLAD, MegaLoc, QAA.
+NetVLAD, AP-GeM, SFRS, CosPlace, Conv-AP, MixVPR, EigenPlaces, AnyLoc, SALAD, EigenPlaces-indoor, SALAD-indoor, CricaVPR, CliqueMining, SuperVLAD, MegaLoc, BoQ, DinoMix, EDTformer, QAA.
 
 ### Unsupported models / contributing
-We'd gladly accept PRs from anyone who can VPR models to work in this repo.
+We'd gladly accept PRs from anyone who can get VPR models to work in this repo.
 
 To get a model to work simply add it to `parser.py` and add it to `vpr_models/__init__.py`: if the model is easy to download (e.g. through `torch.hub.load`), adding a few (4-5) lines of code in total should be enough to make it work. There is no need to test it on a VPR dataset, just make it run on the toy dataset and then we'll test it on the VPR datasets ourselves to ensure correctness.
 
@@ -100,5 +100,5 @@ If you use this repository please cite our [ICCV 2023 EigenPlaces paper](https:/
 }
 ```
 
-Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [AP-GeM](https://github.com/naver/deep-image-retrieval), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc), [SALAD](https://github.com/serizba/salad), [EigenPlaces-indoor and SALAD-indoor](https://github.com/Enrico-Chiavassa/Indoor-VPR), [SuperVLAD](https://github.com/Lu-Feng/SuperVLAD), [MegaLoc]([https://arxiv.org/abs/2502.17237](https://github.com/gmberton/MegaLoc)), [QAA](https://github.com/xjh19972/QAA) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, except for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
+Kudos to the authors of [NetVLAD](https://github.com/Relja/netvlad), [AP-GeM](https://github.com/naver/deep-image-retrieval), [SFRS](https://github.com/yxgeee/OpenIBL), [CosPlace](https://github.com/gmberton/CosPlace), [Conv-AP](https://github.com/amaralibey/gsv-cities), [MixVPR](https://github.com/amaralibey/mixVPR), [EigenPlaces](https://github.com/gmberton/EigenPlaces), [AnyLoc](https://github.com/AnyLoc/AnyLoc), [SALAD](https://github.com/serizba/salad), [EigenPlaces-indoor and SALAD-indoor](https://github.com/Enrico-Chiavassa/Indoor-VPR), [CricaVPR](https://github.com/Lu-Feng/CricaVPR), [CliqueMining](https://github.com/serizba/cliquemining), [SuperVLAD](https://github.com/Lu-Feng/SuperVLAD), [MegaLoc](https://github.com/gmberton/MegaLoc), [BoQ](https://github.com/amaralibey/Bag-of-Queries), [DinoMix](https://github.com/GaoShuang98/DINO-Mix), [EDTformer](https://github.com/Tong-Jin01/EDTformer), [QAA](https://github.com/xjh19972/QAA) for open sourcing their models' weights. The code for each model has been taken from their respective repositories, except for the code for NetVLAD which has been taken from [hloc](https://github.com/cvg/Hierarchical-Localization).
 Make sure to cite them if you use each model's code.
