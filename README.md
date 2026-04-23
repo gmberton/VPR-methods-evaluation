@@ -80,6 +80,12 @@ We'd gladly accept PRs from anyone who can VPR models to work in this repo.
 
 To get a model to work simply add it to `parser.py` and add it to `vpr_models/__init__.py`: if the model is easy to download (e.g. through `torch.hub.load`), adding a few (4-5) lines of code in total should be enough to make it work. There is no need to test it on a VPR dataset, just make it run on the toy dataset and then we'll test it on the VPR datasets ourselves to ensure correctness.
 
+## License
+
+This repository is released under the [MIT License](LICENSE).
+
+Note that this repo is a wrapper around third-party VPR methods, and each wrapped model (its code and weights) is subject to its own license. Please refer to the original repositories linked in the Acknowledgements section below for the license terms of each method.
+
 ## Acknowledgements / Cite / BibTex
 
 If you use this repository please cite our [ICCV 2023 EigenPlaces paper](https://openaccess.thecvf.com/content/ICCV2023/html/Berton_EigenPlaces_Training_Viewpoint_Robust_Models_for_Visual_Place_Recognition_ICCV_2023_paper.html), for which we started this repo to ensure fair comparisons between VPR models:
